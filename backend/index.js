@@ -1,12 +1,15 @@
-const express = require('express');
-const app = express();
-const cors = require('cors');
-const jose = require('jose');
-const bcrypt = require('bcryptjs');
-const mongoose = require('mongoose');
-const User = require('./models/user.js');
+import express from 'express';
+import cors from 'cors';
+import bcrypt from 'bcryptjs';
+import { SignJWT } from 'jose';
+import mongoose from 'mongoose';
+import User from './models/user.js';
 
-require('dotenv').config();
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const app = express();
 
 app.use(cors());
 app.use(express.json());
@@ -41,7 +44,7 @@ app.post('/api/login', async (req, res) => {
     const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
     
     if (isPasswordValid) {
-        const token = await new jose.SignJWT({
+        const token = await new SignJWT({
             name: user.name,
             email: user.email,
         })
