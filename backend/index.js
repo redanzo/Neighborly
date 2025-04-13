@@ -4,13 +4,10 @@ import bcrypt from 'bcryptjs';
 import { SignJWT } from 'jose';
 import mongoose from 'mongoose';
 import User from './models/user.js';
-
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
@@ -20,17 +17,15 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING);
 app.post('/api/register', async (req, res) => {
     try {
         const newPassword = await bcrypt.hash(req.body.password, 10);
-        const tutor = req.body.role === 'tutor' ? true : false;
         
         await User.create({
             name: req.body.name,
             email: req.body.email,
             password: newPassword,
-            tutor: tutor,
         });
-        res.json({ status: 'ok' });
+        return res.json({ status: 'ok' });
     } catch (err) {
-        res.json({ status: 'error', error: err });
+        return res.json({ status: 'error', error: err });
     }
 });
 
@@ -55,7 +50,6 @@ app.post('/api/login', async (req, res) => {
         return res.json({
             status: 'ok',
             user: token,
-            tutor: user.tutor
         });
     } else {
         return res.json({ status: 'error', user: false });
