@@ -30,7 +30,7 @@ const Navbar = ({ setCurrentPage }) => {
           <div className="nav-dropdown">
             <button onClick={() => handleNavigation('Profile')}>Profile</button>
             <button onClick={() => handleNavigation('Settings')}>Settings</button>
-            <button onClick={() => handleNavigation('Logout')}>Logout</button>
+            <button onClick={() => handleNavigation('Login')}>Logout</button>
           </div>
         )}
       </div>

@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import './App.css'
 import Navbar from './components/Navbar';
+
+import Login from './components/Login';
+import Signup from './components/Signup';
+
 import Home from './components/Home';
 import Marketplace from './components/Marketplace';
 // import LostPets from './components/LostPets';
@@ -11,10 +15,14 @@ import Marketplace from './components/Marketplace';
 // import Logout from './components/Logout';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('Home'); // Default to Marketplace
+  const [currentPage, setCurrentPage] = useState('Login'); // Default to Marketplace
 
   const renderPage = () => {
     switch(currentPage) {
+      case 'Login':
+        return <Login switchPage={setCurrentPage} />;
+      case 'Signup':
+        return <Signup switchPage={setCurrentPage} />;
       case 'Home':
         return <Home />;
       case 'Marketplace':
@@ -38,10 +46,12 @@ function App() {
 
   return (
     <div className="app">
-      <Navbar setCurrentPage={setCurrentPage} />
+      {currentPage !== 'Login' && currentPage !== 'Signup' && (
+        <Navbar setCurrentPage={setCurrentPage} />
+      )}
       {renderPage()}
     </div>
-  )
+  );
 }
 
 export default App;
