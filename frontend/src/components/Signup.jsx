@@ -81,8 +81,8 @@ const Signup = ({ switchPage }) => {
 
         const data = await response.json();
 
-        if (response.status == 'ok') {
-            alert('Registrration successful! Please login.');
+        if (data.status == 'ok') {
+            alert('Registration successful! Please login.');
             switchPage('Login');
         }
         else {
