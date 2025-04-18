@@ -7,15 +7,15 @@ import Signup from './components/Signup';
 
 import Home from './components/Home';
 import Marketplace from './components/Marketplace';
-// import LostPets from './components/LostPets';
-// import Alerts from './components/Alerts';
+import LostPets from './components/LostPets';
+import Alerts from './components/Alerts';
 // import Events from './components/Events';
 // import Profile from './components/Profile';
 // import Settings from './components/Settings';
 // import Logout from './components/Logout';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('Login'); // Default to Marketplace
+  const [currentPage, setCurrentPage] = useState('Home'); // Default to Marketplace
 
   const renderPage = () => {
     switch(currentPage) {
@@ -28,9 +28,9 @@ function App() {
       case 'Marketplace':
         return <Marketplace />;
       case 'LostPets':
-        return <Home />;
+        return <LostPets />;
       case 'Alerts':
-        return <Home />;
+        return <Alerts />;
       case 'Events':
         return <Home />;
       case 'Profile':
@@ -47,7 +47,7 @@ function App() {
   return (
     <div className="app">
       {currentPage !== 'Login' && currentPage !== 'Signup' && (
-        <Navbar setCurrentPage={setCurrentPage} />
+        <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       )}
       {renderPage()}
     </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Navbar.css';
 
-const Navbar = ({ setCurrentPage }) => {
+const Navbar = ({ currentPage, setCurrentPage }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const toggleDropdown = () => {
@@ -15,15 +15,15 @@ const Navbar = ({ setCurrentPage }) => {
 
   return (
     <nav className="navbar">
-      <div 
-        className="nav-logo-container" 
-        onMouseEnter={toggleDropdown} 
+      <div
+        className="nav-logo-container"
+        onMouseEnter={toggleDropdown}
         onMouseLeave={toggleDropdown}
       >
-        <img 
-          src="/img/Neighborly_Logo.png" 
-          alt="Neighborly Logo" 
-          className="nav-logo" 
+        <img
+          src="/img/Neighborly_Logo.png"
+          alt="Neighborly Logo"
+          className="nav-logo"
           onClick={() => handleNavigation('Home')}
         />
         {dropdownVisible && (
@@ -36,34 +36,42 @@ const Navbar = ({ setCurrentPage }) => {
       </div>
 
       <div className="nav-buttons">
-        <button 
-          className="nav-btn" 
+        <button
+          className={`nav-btn ${currentPage === 'Marketplace' ? 'active' : ''}`}
           onClick={() => handleNavigation('Marketplace')}
         >
-          <img src="/img/Marketplace.png" className="nav-icon" alt="Marketplace"/>
+          <img src="/img/Marketplace.png" className="nav-icon" alt="Marketplace" />
           Marketplace
         </button>
+
+
         <button 
-          className="nav-btn" 
+          className={`nav-btn ${currentPage === 'LostPets' ? 'active' : ''}`}
           onClick={() => handleNavigation('LostPets')}
         >
-          <img src="/img/LostPets.png" className="nav-icon" alt="Lost Pets"/>
+          <img src="/img/LostPets.png" className="nav-icon" alt="Lost Pets" />
           Lost Pets
         </button>
-        <button 
-          className="nav-btn" 
+
+
+        <button
+          className={`nav-btn ${currentPage === 'Alerts' ? 'active' : ''}`}
           onClick={() => handleNavigation('Alerts')}
         >
-          <img src="/img/Alerts.png" className="nav-icon" alt="Alerts"/>
+          <img src="/img/Alerts.png" className="nav-icon" alt="Alerts" />
           Alerts
         </button>
-        <button 
-          className="nav-btn" 
+
+
+        <button
+          className={`nav-btn ${currentPage === 'Events' ? 'active' : ''}`}
           onClick={() => handleNavigation('Events')}
         >
-          <img src="/img/Events.png" className="nav-icon" alt="Events"/>
+          <img src="/img/Events.png" className="nav-icon" alt="Events" />
           Events
         </button>
+
+
       </div>
     </nav>
   );

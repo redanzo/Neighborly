@@ -1,4 +1,4 @@
-.marketplace-container {
+.lostpets-container {
     background-color: var(--accent-color);
     height: 100vh;
     width: 100vw;
@@ -7,13 +7,13 @@
     overflow: hidden;
 }
 
-.marketplace-content {
+.lostpets-content {
     display: flex;
     flex: 1;
     overflow: hidden;
 }
 
-.marketplace-grid {
+.lostpets-grid {
     flex: 3;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -21,11 +21,10 @@
     padding: 2em;
     overflow-y: auto;
     height: calc(100vh - 80px);
-    /* adjust based on navbar height */
     box-sizing: border-box;
 }
 
-.marketplace-box {
+.lostpets-box {
     background-color: var(--secondary-color);
     border-radius: 1em;
     overflow: hidden;
@@ -35,19 +34,19 @@
     box-shadow: rgba(80, 48, 71, 0.2) 0px 4px 12px;
 }
 
-.marketplace-box-top {
+.lostpets-box-top {
     flex: 2;
     background-color: var(--secondary-color);
 }
 
-.marketplace-box-bottom {
+.lostpets-box-bottom {
     flex: 1;
     background-color: var(--primary-color);
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
 
-.marketplace-sidebar {
+.lostpets-sidebar {
     flex: 1;
     background-color: var(--secondary-color);
     padding: 2em 1em;
@@ -59,7 +58,7 @@
     position: sticky;
 }
 
-.marketplace-search-container {
+.lostpets-search-container {
     display: flex;
     align-items: center;
     border-radius: 30px;
@@ -68,12 +67,12 @@
     gap: 0.5em;
 }
 
-.marketplace-search-icon {
+.lostpets-search-icon {
     width: 20px;
     height: 20px;
 }
 
-.marketplace-search-input {
+.lostpets-search-input {
     border: none;
     background: transparent;
     color: white;
@@ -82,58 +81,17 @@
     outline: none;
 }
 
-.marketplace-search-input::placeholder {
+.lostpets-search-input::placeholder {
     color: white;
 }
 
-.marketplace-filter-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    font-weight: bold;
-    color: var(--primary-color);
-}
-
-.marketplace-filter-checkbox input[type="checkbox"] {
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--primary-color);
-    border-radius: 4px;
-    background-color: var(--secondary-color);
-    cursor: pointer;
-    position: relative;
-    transition: background-color 0.2s, border-color 0.2s;
-}
-
-.marketplace-filter-checkbox input[type="checkbox"]:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-.marketplace-filter-checkbox input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 4px;
-    width: 6px;
-    height: 10px;
-    border: solid var(--secondary-color);
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-
-.marketplace-filter-checkbox label {
-    color: var(--primary-color);
-    font-weight: bold;
-}
-
-.marketplace-divider {
+.lostpets-divider {
     border: none;
     border-top: 2px solid var(--primary-color);
-    margin: 0.5em 0 19em 0;
+    margin: 0.5em 0 22em 0;
 }
 
-.marketplace-sidebar-btn {
+.lostpets-sidebar-btn {
     background-color: var(--primary-color);
     color: var(--secondary-color);
     padding: 1em 1em;
@@ -145,35 +103,32 @@
     transition: background-color 0.2s;
 }
 
-.marketplace-sidebar-btn:hover {
+.lostpets-sidebar-btn:hover {
     background-color: var(--accent-color);
     color: var(--primary-color);
 }
 
-.marketplace-grid::-webkit-scrollbar-track {
+.lostpets-grid::-webkit-scrollbar-track {
     background-color: #503047;
-    /* Dark background */
     border-radius: 8px;
 }
 
-.marketplace-grid::-webkit-scrollbar-thumb {
+.lostpets-grid::-webkit-scrollbar-thumb {
     background-color: #FFDDF6;
-    /* Light pink thumb */
     border-radius: 8px;
     border: 3px solid #503047;
-    /* Padding effect */
 }
 
-.marketplace-grid {
+.lostpets-grid {
     scrollbar-color: #FFDDF6 #503047;
 }
 
 @media (max-width: 768px) {
-    .marketplace-sidebar {
+    .lostpets-sidebar {
         display: none;
     }
 
-    .marketplace-grid {
+    .lostpets-grid {
         grid-template-columns: 1fr;
         padding: 1em;
     }
