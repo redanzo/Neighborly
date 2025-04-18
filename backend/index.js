@@ -14,18 +14,29 @@ app.use(express.json());
 mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_CONNECTION_STRING);
 
-app.post('/api/register', async (req, res) => {
+app.post('/api/signup', async (req, res) => {
     try {
-        const newPassword = await bcrypt.hash(req.body.password, 10);
-        
-        await User.create({
-            name: req.body.name,
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const user = new User({
+            firstName: req.body.fname,
+            lastName: req.body.lname,
             email: req.body.email,
-            password: newPassword,
+            password: hashedPassword,
+            community: req.body.community,
+            address: {
+                line1: req.body.address.line1,
+                line2: req.body.address.line2,
+                city: req.body.address.city,
+                state: req.body.address.state,
+                zip: req.body.address.zip
+            }
         });
-        return res.json({ status: 'ok' });
-    } catch (err) {
-        return res.json({ status: 'error', error: err });
+        await user.save();
+        res.json({ status: 'ok' });
+    }
+    catch (error) {
+        console.error('Error during signup:', error);
+        res.json({ status: 'error', error: 'Duplicate email' });
     }
 });
 

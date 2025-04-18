@@ -49,7 +49,7 @@ const Signup = ({ switchPage }) => {
         setStep(2);
     };
 
-    const handleSignup = (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault();
       
         const { community, address } = formData;
@@ -70,7 +70,24 @@ const Signup = ({ switchPage }) => {
         };
       
         console.log('Ready to send to backend:', payload);
-        switchPage('Login');
+
+        const response = await fetch('/api/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.status == 'ok') {
+            alert('Registrration successful! Please login.');
+            switchPage('Login');
+        }
+        else {
+            alert('Error: ' + data.error);
+        }
       };
 
     const handleSelectCommunity = (name) => {
