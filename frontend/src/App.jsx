@@ -9,7 +9,7 @@ import Home from './components/Home';
 import Marketplace from './components/Marketplace';
 import LostPets from './components/LostPets';
 import Alerts from './components/Alerts';
-// import Events from './components/Events';
+import Events from './components/Events';
 // import Profile from './components/Profile';
 // import Settings from './components/Settings';
 // import Logout from './components/Logout';
@@ -32,7 +32,7 @@ function App() {
       case 'Alerts':
         return <Alerts />;
       case 'Events':
-        return <Home />;
+        return <Events />;
       case 'Profile':
         return <Home />;
       case 'Settings':
