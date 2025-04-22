@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import './Navbar.css';
+import React, { useState } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import './Navbar.css'
 
-const Navbar = ({ currentPage, setCurrentPage }) => {
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+export default function Navbar() {
+  const [dropdownVisible, setDropdownVisible] = useState(false)
+  const navigate = useNavigate()
 
-  const toggleDropdown = () => {
-    setDropdownVisible(!dropdownVisible);
-  };
+  const toggleDropdown = () => setDropdownVisible(v => !v)
 
-  const handleNavigation = (page) => {
-    setCurrentPage(page);
-    setDropdownVisible(false);
-  };
+  const go = (to) => {
+    navigate(to)
+    setDropdownVisible(false)
+  }
 
   return (
     <nav className="navbar">
@@ -24,57 +24,50 @@ const Navbar = ({ currentPage, setCurrentPage }) => {
           src="/img/Neighborly_Logo.png"
           alt="Neighborly Logo"
           className="nav-logo"
-          onClick={() => handleNavigation('Home')}
+          onClick={() => go('/home')}
         />
         {dropdownVisible && (
           <div className="nav-dropdown">
-            <button onClick={() => handleNavigation('Profile')}>Profile</button>
-            <button onClick={() => handleNavigation('Settings')}>Settings</button>
-            <button onClick={() => handleNavigation('Login')}>Logout</button>
+            <button onClick={() => go('/profile')}>Profile</button>
+            <button onClick={() => go('/settings')}>Settings</button>
+            <button onClick={() => go('/login')}>Logout</button>
           </div>
         )}
       </div>
 
       <div className="nav-buttons">
-        <button
-          className={`nav-btn ${currentPage === 'Marketplace' ? 'active' : ''}`}
-          onClick={() => handleNavigation('Marketplace')}
+        <NavLink
+          to="/marketplace"
+          className={({ isActive }) => `nav-btn${isActive ? ' active' : ''}`}
         >
           <img src="/img/Marketplace.png" className="nav-icon" alt="Marketplace" />
           Marketplace
-        </button>
+        </NavLink>
 
-
-        <button 
-          className={`nav-btn ${currentPage === 'LostPets' ? 'active' : ''}`}
-          onClick={() => handleNavigation('LostPets')}
+        <NavLink
+          to="/lostpets"
+          className={({ isActive }) => `nav-btn${isActive ? ' active' : ''}`}
         >
           <img src="/img/LostPets.png" className="nav-icon" alt="Lost Pets" />
           Lost Pets
-        </button>
+        </NavLink>
 
-
-        <button
-          className={`nav-btn ${currentPage === 'Alerts' ? 'active' : ''}`}
-          onClick={() => handleNavigation('Alerts')}
+        <NavLink
+          to="/alerts"
+          className={({ isActive }) => `nav-btn${isActive ? ' active' : ''}`}
         >
           <img src="/img/Alerts.png" className="nav-icon" alt="Alerts" />
           Alerts
-        </button>
+        </NavLink>
 
-
-        <button
-          className={`nav-btn ${currentPage === 'Events' ? 'active' : ''}`}
-          onClick={() => handleNavigation('Events')}
+        <NavLink
+          to="/events"
+          className={({ isActive }) => `nav-btn${isActive ? ' active' : ''}`}
         >
           <img src="/img/Events.png" className="nav-icon" alt="Events" />
           Events
-        </button>
-
-
+        </NavLink>
       </div>
     </nav>
-  );
-};
-
-export default Navbar;
+  )
+}

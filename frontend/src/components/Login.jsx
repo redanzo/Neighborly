@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import './Auth.css';
 
-const Login = ({ switchPage }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     if (!email || !password) {
       alert('Please fill in all fields');
       return;
@@ -15,22 +16,16 @@ const Login = ({ switchPage }) => {
 
     const response = await fetch('/api/login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
     });
-
     const data = await response.json();
-    if (data.status == 'ok') {
+
+    if (data.status === 'ok') {
       localStorage.setItem('token', data.user);
       alert('Login successful!');
-      switchPage('Home');
-    }
-    else {
+      navigate('/home');
+    } else {
       alert('Error: ' + data.error);
     }
   };
@@ -54,12 +49,12 @@ const Login = ({ switchPage }) => {
           required
         />
         <button type="submit">Login</button>
-        <p className="switch-link" onClick={() => switchPage('Signup')}>
-          Don’t have an account? Sign up
+        <p className="switch-link">
+          <Link to="/signup">Don’t have an account? Sign up</Link>
         </p>
       </form>
     </div>
   );
-};
+}
 
 export default Login;

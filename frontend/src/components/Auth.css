@@ -54,6 +54,8 @@
 }
 
 .switch-link {
+    color: inherit;
+    text-decoration: none;
     margin-top: 1em;
     font-size: 0.9em;
     color: var(--primary-color);
@@ -170,4 +172,17 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.auth-container .switch-link a:link,
+.auth-container .switch-link a:visited {
+  color: inherit !important;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+.auth-container .switch-link a:hover,
+.auth-container .switch-link a:active {
+  color: inherit !important;
+  text-decoration: underline !important;
 }
