@@ -12,7 +12,7 @@ const Home = () => {
                 <section className="box large-box">
                     <h3 className="section-title">Emergency Alerts</h3>
                     <div className="post-grid">
-                        {Array.from({ length: 5 }).map((_, i) => {
+                        {Array.from({ length: 4 }).map((_, i) => {
                             const imageName = `warning${i + 1}.png`;
                             const hasImage = existingImages.includes(imageName);
 
