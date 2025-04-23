@@ -21,7 +21,7 @@ const Home = () => {
                                     {hasImage ? (
                                         <>
                                             <div className="image-wrapper">
-                                                <img src={`/img/${imageName}`} alt="Alert" />
+                                                <img src={`/img/Alerts/${imageName}`} alt="Alert" />
                                             </div>
                                             <div className="post-overlay">
                                                 <p>Gas leak reported on Elm St.</p>

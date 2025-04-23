@@ -1,180 +1,326 @@
 .marketplace-container {
-    background-color: var(--accent-color);
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  background-color: var(--accent-color);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .marketplace-content {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
+  display: flex;
+  flex: 1;
+  overflow: hidden;
 }
 
 .marketplace-grid {
-    flex: 3;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2em;
-    padding: 2em;
-    overflow-y: auto;
-    height: calc(100vh - 80px);
-    /* adjust based on navbar height */
-    box-sizing: border-box;
+  flex: 3;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2em;
+  padding: 2em;
+  overflow-y: auto;
+  height: calc(100vh - 80px);
+  box-sizing: border-box;
 }
 
 .marketplace-box {
-    background-color: var(--secondary-color);
-    border-radius: 1em;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    height: 200px;
-    box-shadow: rgba(80, 48, 71, 0.2) 0px 4px 12px;
+  background-color: var(--secondary-color);
+  border-radius: 1em;
+  border: 5px solid var(--primary-color);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  box-shadow: rgba(80, 48, 71, 0.2) 0px 4px 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.marketplace-box:hover {
+  transform: scale(1.03);
+  box-shadow: rgba(80, 48, 71, 0.3) 0px 6px 16px;
 }
 
 .marketplace-box-top {
-    flex: 2;
-    background-color: var(--secondary-color);
+  flex: 2;
+  background-color: var(--secondary-color);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.marketplace-item-price {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(232, 196, 223, 0.75);
+  color: var(--primary-color);
+  padding: 8px;
+  font-size: 0.9em;
+  text-align: center;
+  transform: none;
+  transition: none;
 }
 
 .marketplace-box-bottom {
-    flex: 1;
-    background-color: var(--primary-color);
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+  flex: 1;
+  background-color: var(--primary-color);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marketplace-item-title {
+  color: var(--secondary-color);
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 .marketplace-sidebar {
-    flex: 1;
-    background-color: var(--secondary-color);
-    padding: 2em 1em;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5em;
-    height: calc(100vh - 80px);
-    position: sticky;
+  flex: 1;
+  background-color: var(--secondary-color);
+  padding: 2em 1em;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  height: calc(100vh - 80px);
+  position: sticky;
 }
 
 .marketplace-search-container {
-    display: flex;
-    align-items: center;
-    border-radius: 30px;
-    padding: 0.8em 1em;
-    background-color: var(--primary-color);
-    gap: 0.5em;
+  display: flex;
+  align-items: center;
+  border-radius: 30px;
+  padding: 0.8em 1em;
+  background-color: var(--primary-color);
+  gap: 0.5em;
 }
 
 .marketplace-search-icon {
-    width: 20px;
-    height: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .marketplace-search-input {
-    border: none;
-    background: transparent;
-    color: white;
-    font-size: 1em;
-    width: 100%;
-    outline: none;
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 1em;
+  width: 100%;
+  outline: none;
+  transition: all 0.3s ease;
 }
 
 .marketplace-search-input::placeholder {
-    color: white;
+  color: white;
+}
+
+.marketplace-no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2em;
+  color: var(--primary-color);
+  font-size: 1.2em;
 }
 
 .marketplace-filter-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    font-weight: bold;
-    color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.8em;
+  border-radius: 8px;
+  transition: background-color 0.2s;
 }
 
-.marketplace-filter-checkbox input[type="checkbox"] {
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--primary-color);
-    border-radius: 4px;
-    background-color: var(--secondary-color);
-    cursor: pointer;
-    position: relative;
-    transition: background-color 0.2s, border-color 0.2s;
-}
-
-.marketplace-filter-checkbox input[type="checkbox"]:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-.marketplace-filter-checkbox input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 4px;
-    width: 6px;
-    height: 10px;
-    border: solid var(--secondary-color);
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+.marketplace-filter-checkbox:hover {
+  background-color: rgba(255, 221, 246, 0.1);
 }
 
 .marketplace-filter-checkbox label {
-    color: var(--primary-color);
-    font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+}
+
+.marketplace-filter-checkbox input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--primary-color);
+  border-radius: 4px;
+  background-color: var(--secondary-color);
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.marketplace-filter-checkbox input[type="checkbox"]:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.marketplace-filter-checkbox input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  width: 6px;
+  height: 10px;
+  border: solid var(--secondary-color);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.marketplace-filter-checkbox label {
+  color: var(--primary-color);
+  font-weight: bold;
 }
 
 .marketplace-divider {
-    border: none;
-    border-top: 2px solid var(--primary-color);
-    margin: 0.5em 0 19em 0;
+  border: none;
+  border-top: 2px solid var(--primary-color);
+  margin: 0.5em 0 17.5em 0;
 }
 
 .marketplace-sidebar-btn {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-    padding: 1em 1em;
-    border: none;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: medium;
-    cursor: pointer;
-    transition: background-color 0.2s;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  padding: 1em 1em;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: medium;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .marketplace-sidebar-btn:hover {
-    background-color: var(--accent-color);
-    color: var(--primary-color);
+  background-color: var(--accent-color);
+  color: var(--primary-color);
 }
 
 .marketplace-grid::-webkit-scrollbar-track {
-    background-color: #503047;
-    /* Dark background */
-    border-radius: 8px;
+  background-color: #503047;
+  border-radius: 8px;
 }
 
 .marketplace-grid::-webkit-scrollbar-thumb {
-    background-color: #FFDDF6;
-    /* Light pink thumb */
-    border-radius: 8px;
-    border: 3px solid #503047;
-    /* Padding effect */
+  background-color: #ffddf6;
+  border-radius: 8px;
+  border: 3px solid #503047;
 }
 
 .marketplace-grid {
-    scrollbar-color: #FFDDF6 #503047;
+  scrollbar-color: #ffddf6 #503047;
+}
+
+/* Modal Styles */
+.marketplace-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.marketplace-modal {
+  background-color: var(--secondary-color);
+  border-radius: 1em;
+  width: 80%;
+  max-width: 800px;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.marketplace-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  color: var(--primary-color);
+  z-index: 10;
+}
+
+.marketplace-modal-image {
+  flex: 1;
+  min-height: 400px;
+  background-size: cover;
+  background-position: center;
+}
+
+.marketplace-modal-content {
+  flex: 1;
+  padding: 2em;
+  display: flex;
+  flex-direction: column;
+}
+
+.marketplace-modal-content h2 {
+  color: var(--primary-color);
+  margin-bottom: 0.5em;
+}
+
+.marketplace-modal-price {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 1em;
+}
+
+.marketplace-modal-description {
+  color: var(--primary-color);
+  line-height: 1.6;
+  margin-bottom: 2em;
+  flex-grow: 1;
+}
+
+.marketplace-modal-contact {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  padding: 1em;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: medium;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  align-self: flex-start;
+}
+
+.marketplace-modal-contact:hover {
+  background-color: var(--accent-color);
+  color: var(--primary-color);
 }
 
 @media (max-width: 768px) {
-    .marketplace-sidebar {
-        display: none;
-    }
+  .marketplace-sidebar {
+    display: none;
+  }
 
-    .marketplace-grid {
-        grid-template-columns: 1fr;
-        padding: 1em;
-    }
+  .marketplace-grid {
+    grid-template-columns: 1fr;
+    padding: 1em;
+  }
+
+  .marketplace-modal {
+    flex-direction: column;
+    width: 90%;
+  }
+
+  .marketplace-modal-image {
+    min-height: 200px;
+  }
 }

@@ -81,6 +81,7 @@
     border-radius: 30px;
     border: 3px solid transparent;
     font-size: 1em;
+    text-decoration: none;
     cursor: pointer;
     display: flex;
     align-items: center;
