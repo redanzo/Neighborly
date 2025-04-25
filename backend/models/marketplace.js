@@ -23,7 +23,7 @@ const Marketplace = new mongoose.Schema({
   }
 },
 {
-  timestamp: true,
+  timestamps: true,
 });
 
 export default mongoose.model('Marketplace', Marketplace);

@@ -2,14 +2,20 @@ import express from 'express';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import { SignJWT } from 'jose';
+import multer from 'multer';
+
 import mongoose from 'mongoose';
 import User from './models/user.js';
+import Marketplace from './models/marketplace.js';
+
 import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_CONNECTION_STRING);
@@ -64,6 +70,32 @@ app.post('/api/login', async (req, res) => {
         });
     } else {
         return res.json({ status: 'error', user: false });
+    }
+});
+
+app.post('/api/marketplace', upload.single('image'), async (req, res) => {
+    const { title, description, price, contact } = req.body;
+    if(!req.file){
+        return res.status(400).json({ status: 'error', error: 'No file uploaded' });
+    }
+
+    const item = new Marketplace({
+        title,
+        description,
+        price: Number(price),
+        contact,
+        image: {
+            data: req.file.buffer,
+            contentType: req.file.mimetype
+        }
+    });
+
+    try {
+        await item.save();
+        return res.json({ status: 'ok' });
+    } catch (error) {
+        console.error('Error saving marketplace item:', error);
+        return res.json({ status: 'error', error: 'Failed to save item' });
     }
 });
 
