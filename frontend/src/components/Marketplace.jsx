@@ -1,71 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Marketplace.css";
-
-const items = [
-  {
-    id: 1,
-    title: "Wooden Dining Table",
-    price: "120",
-    image: "/img/Marketplace/diningtable.jpg",
-    description:
-      "Solid oak dining table with minimal wear. Perfect for family dinners. Dimensions: 180cm x 90cm x 75cm.",
-    contact: "table.seller@example.com",
-  },
-  {
-    id: 2,
-    title: "Comfortable Flip Flops",
-    price: "0",
-    image: "/img/Marketplace/flipflops.jpg",
-    description:
-      "Hardly worn flip flops in excellent condition. Size 9. Very comfortable for summer wear.",
-    contact: "flipflop.seller@example.com",
-  },
-  {
-    id: 3,
-    title: "Wireless Headphones",
-    price: "80",
-    image: "/img/Marketplace/headphones.jpg",
-    description:
-      "Premium noise-cancelling wireless headphones with 30hr battery life. Includes charging case.",
-    contact: "headphone.seller@example.com",
-  },
-  {
-    id: 4,
-    title: "Indoor Plant",
-    price: "25",
-    image: "/img/Marketplace/plant.jpg",
-    description:
-      "Healthy snake plant in ceramic pot. Low maintenance, perfect for beginners. About 50cm tall.",
-    contact: "plant.seller@example.com",
-  },
-  {
-    id: 5,
-    title: "Storage Cabinet",
-    price: "90",
-    image: "/img/Marketplace/cabinet.jpg",
-    description:
-      "Modern two-door storage cabinet with adjustable shelves. Great for organizing any room.",
-    contact: "cabinet.seller@example.com",
-  },
-  {
-    id: 6,
-    title: "Smart Fridge",
-    price: "0",
-    image: "/img/Marketplace/fridge.jpg",
-    description:
-      "Compact mini fridge, energy efficient, perfect for dorm rooms or offices. Clean and works great.",
-    contact: "fridge.seller@example.com",
-  },
-  {
-    id: 7,
-    title: "Comfy Sofa",
-    price: "220",
-    image: "/img/Marketplace/sofa.jpg",
-    description:
-      "3-seater gray fabric sofa in excellent condition. Comes from a pet-free, smoke-free home.",
-    contact: "sofa.seller@example.com",
-  },
-];
+import { useParams, useNavigate } from "react-router-dom";
+import { marketplace } from "../data";
 
 const Marketplace = () => {
   // Sample item data
@@ -73,10 +9,23 @@ const Marketplace = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showFreeOnly, setShowFreeOnly] = useState(false);
-  const [filteredItems, setFilteredItems] = useState(items);
+  const [filteredItems, setFilteredItems] = useState(marketplace);
+
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
-    const filtered = items.filter((item) => {
+    if (id) {
+      const matchedItem = marketplace.find((item) => item.id === Number(id));
+      if (matchedItem) {
+        setSelectedItem(matchedItem);
+        setShowModal(true);
+      }
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const filtered = marketplace.filter((item) => {
       // Search filter
       const matchesSearch = item.title
         .toLowerCase()
@@ -88,7 +37,7 @@ const Marketplace = () => {
       return matchesSearch && matchesFree;
     });
     setFilteredItems(filtered);
-  }, [searchTerm, showFreeOnly, items]);
+  }, [searchTerm, showFreeOnly, marketplace]);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -97,6 +46,8 @@ const Marketplace = () => {
 
   const closeModal = () => {
     setShowModal(false);
+    setSelectedItem(null);
+    navigate("/marketplace");
   };
 
   const handleSearchChange = (e) => {
@@ -164,7 +115,6 @@ const Marketplace = () => {
           </div>
           <hr className="marketplace-divider" />
           <button className="marketplace-sidebar-btn">Add Item</button>
-          <button className="marketplace-sidebar-btn">Delete Item</button>
         </div>
 
         {/* Item Detail Modal */}

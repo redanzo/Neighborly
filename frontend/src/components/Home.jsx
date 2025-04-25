@@ -1,52 +1,137 @@
-import React from 'react';
-import './Home.css';
+import React from "react";
+import "./Home.css";
+import { alerts, events, lostPets, marketplace } from "../data";
+import { useNavigate } from "react-router-dom";
+
+
+import dayjs from "dayjs";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+dayjs.extend(isSameOrAfter);
 
 const Home = () => {
-    const existingImages = ['warning1.png', 'warning2.png', 'warning4.png', 'warning5.png'];
+    const today = dayjs().startOf("day");
 
-    return (
-        <div className="home-container">
-            <main className="grid-container">
+  // Convert keys to actual dayjs objects, filter & sort properly
+  const upcomingDates = Object.keys(events)
+  .filter((date) => dayjs(date, "MM/DD/YYYY").startOf("day").isSameOrAfter(today))
+  .sort(
+    (a, b) =>
+      dayjs(a, "MM/DD/YYYY").valueOf() - dayjs(b, "MM/DD/YYYY").valueOf()
+  );
+
+  const latestEventDate = upcomingDates[0];
+  const latestEvent = latestEventDate ? events[latestEventDate][0] : null;
 
 
-                <section className="box large-box">
-                    <h3 className="section-title">Emergency Alerts</h3>
-                    <div className="post-grid">
-                        {Array.from({ length: 4 }).map((_, i) => {
-                            const imageName = `warning${i + 1}.png`;
-                            const hasImage = existingImages.includes(imageName);
+  const navigate = useNavigate();
 
-                            return (
-                                <div key={i} className={`post-tile ${!hasImage ? 'no-hover-if-text' : ''}`}>
-                                    {hasImage ? (
-                                        <>
-                                            <div className="image-wrapper">
-                                                <img src={`/img/Alerts/${imageName}`} alt="Alert" />
-                                            </div>
-                                            <div className="post-overlay">
-                                                <p>Gas leak reported on Elm St.</p>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <div className="post-text-only">
-                                            <p>Gas leak reported on Elm St.</p>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
+  return (
+    <div className="home-container">
+      <main className="grid-container">
+        {/* Emergency Alerts */}
+        <section className="box large-box">
+          <h3 className="section-title">Emergency Alerts</h3>
+          <div className="post-grid">
+            {alerts.slice(0, 4).map((alert, i) => (
+              <div
+                key={i}
+                className={`post-tile ${
+                  !alert.image ? "no-hover-if-text" : ""
+                }`}
+                onClick={() => navigate(`/alerts/${alert.id}`)}
+              >
+                {alert.image ? (
+                  <>
+                    <div className="image-wrapper">
+                      <img src={alert.image} alt="Alert" />
                     </div>
-                </section>
+                    <div className="post-overlay">
+                      <p>{alert.title}</p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="post-text-only">
+                    <p>{alert.title}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
 
-                
-                <section className="box small-box">Upcoming Event</section>
-                <section className="box large-box">Lost Pets</section>
-                <section className="box small-box">Latest News</section>
-                <section className="box large-box">Marketplace</section>
-                <section className="box small-box">Weather</section>
-            </main>
-        </div>
-    );
+        {/* Upcoming Event */}
+        <section className="box small-box">
+          <h3 className="section-title">Upcoming Event</h3>
+          <div className="upcoming-event-card">
+            {latestEvent ? (
+              <>
+                <p className="event-date">
+                  <strong>{latestEventDate}</strong>
+                </p>
+                <p className="event-description">{latestEvent}</p>
+              </>
+            ) : (
+              <p className="event-description">
+                No upcoming events at this time.
+              </p>
+            )}
+          </div>
+        </section>
+
+        {/* Lost Pets */}
+        <section className="box large-box">
+          <h3 className="section-title">Lost Pets</h3>
+          <div className="post-grid">
+            {lostPets.slice(0, 4).map((pet, i) => (
+              <div
+                key={i}
+                className="post-tile"
+                onClick={() => navigate(`/lostpets/${pet.id}`)}
+              >
+                <div className="image-wrapper">
+                  <img src={pet.image} alt={pet.title} />
+                </div>
+                <div className="post-overlay">
+                  <p>{pet.title}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Latest News */}
+        <section className="box small-box">
+          <h3 className="section-title">Latest News</h3>
+        </section>
+
+        {/* Marketplace */}
+        <section className="box large-box">
+          <h3 className="section-title">Marketplace</h3>
+          <div className="post-grid">
+            {marketplace.slice(0, 4).map((item, i) => (
+              <div
+                key={i}
+                className="post-tile"
+                onClick={() => navigate(`/marketplace/${item.id}`)}
+              >
+                <div className="image-wrapper">
+                  <img src={item.image} alt={item.title} />
+                </div>
+                <div className="post-overlay">
+                  <p>{item.title}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Weather */}
+        <section className="box small-box">
+          <h3 className="section-title">Weather</h3>
+        </section>
+      </main>
+    </div>
+  );
 };
 
 export default Home;
