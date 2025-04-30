@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 
 const Marketplace = new mongoose.Schema({
+  email: { 
+    type: String, 
+    required: true 
+  },
+  community: { 
+    type: String, 
+    required: true 
+  },
   title: { 
     type: String, 
     required: true 
@@ -10,10 +18,6 @@ const Marketplace = new mongoose.Schema({
     required: true 
   },
   description: { 
-    type: String, 
-    required: true 
-  },
-  contact: { 
     type: String, 
     required: true 
   },

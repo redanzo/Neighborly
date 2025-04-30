@@ -9,7 +9,7 @@ const formConfig = {
   },
   lostpets: {
     title: "Report Lost Pet",
-    fields: ["name", "image", "description"],
+    fields: ["title", "image", "description"],
   },
   alerts: {
     title: "Report Alert",
@@ -21,13 +21,23 @@ const formConfig = {
   },
 };
 
+const apiEndpoints = {
+  marketplace: "/api/marketplace",
+  lostpets:     "/api/lostPet",
+  alerts:       "/api/alert",
+  events:       "/api/event",
+};
+
 const AddItemForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const context = location.state?.from || "marketplace";
   const config = formConfig[context];
+  const apiEndpoint = apiEndpoints[context];
 
   const [formData, setFormData] = useState({});
+  const [error, setError] = useState("");
+
 
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
@@ -52,7 +62,7 @@ const AddItemForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (context === "marketplace") {
@@ -63,9 +73,70 @@ const AddItemForm = () => {
       }
     }
 
-    console.log("Submitted", formData);
-    alert("Form submitted (console only). Returning to " + context);
-    navigate(`/${context}`);
+    const body = new FormData();
+    for(let field of config.fields) {
+      if (field === "image") {
+        if (formData.image) {
+          body.append(field, formData.image);
+        }
+        else if (context !== "alerts") {
+          alert("Image is required.");
+          return;
+        }
+      }
+      else{
+        const val = formData[field];
+        if(!val) {
+          alert(`Please fill out the ${field} field.`);
+          return;
+        }
+
+        body.append(field, val);
+      }
+    }
+
+    const community = localStorage.getItem("community");
+    if (community) body.append("community", community);
+
+    const email = localStorage.getItem("email");
+    if (email) body.append("email", email);
+
+    try{
+      const response = await fetch(apiEndpoint, {
+        method: "POST",
+        body,
+      });
+      const result = await response.json();
+
+      if (result.status === "ok") {
+        const postResponse = await fetch("/api/posts", {
+          method: "GET",
+          headers: {
+            community: community,
+          },
+        });
+
+        const postResult = await postResponse.json();
+        if (postResult.status === "ok") {
+          localStorage.setItem("alerts", JSON.stringify(postResult.alerts));
+          localStorage.setItem("events", JSON.stringify(postResult.events));
+          localStorage.setItem("lostPets", JSON.stringify(postResult.lostPets));
+          localStorage.setItem("marketplace", JSON.stringify(postResult.marketplace));
+        }
+        else{
+          console.error("Failed to fetch posts after submission");
+        }
+
+        navigate(`/${context}`);
+      }
+      else {
+        setError(result.error || "Failed to submit");
+      }
+    }
+    catch (err) {
+      console.error(err);
+      setError("Network error. Please try again.");
+    }
   };
 
   return (

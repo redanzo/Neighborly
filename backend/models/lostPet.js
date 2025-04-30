@@ -1,15 +1,19 @@
 import mongoose from 'mongoose';
 
 const LostPet = new mongoose.Schema({
+  email: { 
+    type: String, 
+    required: true 
+  },
+  community: { 
+    type: String, 
+    required: true 
+  },
   title: { 
     type: String, 
     required: true 
   },
   description: { 
-    type: String, 
-    required: true 
-  },
-  contact: { 
     type: String, 
     required: true 
   },

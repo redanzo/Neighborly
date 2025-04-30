@@ -23,9 +23,36 @@ const Login = () => {
 
     if (data.status === 'ok') {
       localStorage.setItem('token', data.user);
-      alert('Login successful!');
-      navigate('/home');
-    } else {
+      localStorage.setItem('email', email);
+      localStorage.setItem('community', data.community);
+
+      const postResponse = await fetch('/api/posts', {
+        method: 'GET',
+        headers: {
+          community: data.community,
+        }
+      });
+
+      const postData = await postResponse.json();
+
+      if (data.status === 'ok') {
+        localStorage.setItem('alerts', JSON.stringify(postData.alerts));
+        localStorage.setItem('events', JSON.stringify(postData.events));
+        localStorage.setItem('lostPets', JSON.stringify(postData.lostPets));
+        localStorage.setItem('marketplace', JSON.stringify(postData.marketplace));
+
+        console.log('Alerts:', postData.alerts);
+        console.log('Events:', postData.events);
+        console.log('Lost Pets:', postData.lostPets);
+        console.log('Marketplace:', postData.marketplace);
+
+        navigate('/home');
+      }
+      else{
+        alert('Error: ' + data.error);
+      }
+    } 
+    else {
       alert('Error: ' + data.error);
     }
   };

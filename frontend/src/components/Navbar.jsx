@@ -13,6 +13,12 @@ export default function Navbar() {
     setDropdownVisible(false)
   }
 
+  const handleLogout = () => {
+    localStorage.clear()
+    setDropdownVisible(false)
+    navigate('/login')
+  }
+
   return (
     <nav className="navbar">
       <div
@@ -30,7 +36,7 @@ export default function Navbar() {
           <div className="nav-dropdown">
             <button onClick={() => go('/profile')}>Profile</button>
             <button onClick={() => go('/settings')}>Settings</button>
-            <button onClick={() => go('/login')}>Logout</button>
+            <button onClick={handleLogout}>Logout</button>
           </div>
         )}
       </div>

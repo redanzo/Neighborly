@@ -6,6 +6,9 @@ import multer from 'multer';
 
 import mongoose from 'mongoose';
 import User from './models/user.js';
+import Alert from './models/alert.js';
+import Event from './models/event.js';
+import LostPet from './models/lostpet.js';
 import Marketplace from './models/marketplace.js';
 
 import dotenv from 'dotenv';
@@ -67,27 +70,96 @@ app.post('/api/login', async (req, res) => {
         return res.json({
             status: 'ok',
             user: token,
+            community: user.community
         });
     } else {
         return res.json({ status: 'error', user: false });
     }
 });
 
+app.post('/api/alert', upload.single('image'), async (req, res) => {
+    const { email, community, title, description } = req.body;
+    
+    const payload = { email, community, title, description };
+
+    if(req.file){
+        payload.image = {
+            data: req.file.buffer,
+            contentType: req.file.mimetype
+        };
+    }
+
+    try {
+        await Alert.create(payload);
+        return res.json({ status: 'ok' });
+    } 
+    catch (error) {
+        console.error('Error saving alert:', error);
+        return res.json({ status: 'error', error: 'Failed to save alert' });
+    }
+});
+
+app.post('/api/event', upload.none(), async (req, res) => {
+    const { email, community, description, date } = req.body;
+
+    const event = new Event({
+        email,
+        community,
+        description,
+        date,
+    });
+
+    try {
+        await event.save();
+        return res.json({ status: 'ok' });
+    } catch (error) {
+        console.error('Error saving event:', error);
+        return res.json({ status: 'error', error: 'Failed to save event' });
+    }
+});
+
+app.post('/api/lostPet', upload.single('image'), async (req, res) => {
+    const { email, community, title, description } = req.body;
+    if(!req.file){
+        return res.status(400).json({ status: 'error', error: 'No file uploaded' });
+    }
+
+    const lostPet = new LostPet({
+        email,
+        community,
+        title,
+        description,
+        image: {
+            data: req.file.buffer,
+            contentType: req.file.mimetype
+        } 
+    });
+
+    try {
+        await lostPet.save();
+        return res.json({ status: 'ok' });
+    } catch (error) {
+        console.error('Error saving lost pet:', error);
+        return res.json({ status: 'error', error: 'Failed to save lost pet' });
+    }
+});
+
 app.post('/api/marketplace', upload.single('image'), async (req, res) => {
-    const { title, description, price, contact } = req.body;
+    const { email, community, title, price, description } = req.body;
     if(!req.file){
         return res.status(400).json({ status: 'error', error: 'No file uploaded' });
     }
 
     const item = new Marketplace({
+        email,
+        community,
         title,
+        price,
         description,
-        price: Number(price),
-        contact,
         image: {
             data: req.file.buffer,
             contentType: req.file.mimetype
-        }
+        } 
     });
 
     try {
@@ -96,6 +168,33 @@ app.post('/api/marketplace', upload.single('image'), async (req, res) => {
     } catch (error) {
         console.error('Error saving marketplace item:', error);
         return res.json({ status: 'error', error: 'Failed to save item' });
+    }
+});
+
+app.get('/api/posts', async (req, res) => {
+    const community = req.headers['community'];
+
+    try {
+      const [marketplace, alerts, events, lostPets] = await Promise.all([
+        Marketplace.find({community}).lean(),
+        Alert.find({community}).lean(),
+        Event.find({community}).lean(),
+        LostPet.find({community}).lean()
+      ]);
+  
+      return res.json({
+        status: 'ok',
+        marketplace: marketplace,
+        alerts: alerts,
+        events: events,
+        lostPets: lostPets
+      });
+    } 
+    catch (error) {
+      console.error('Error fetching posts:', error);
+      return res
+        .status(500)
+        .json({ status: 'error', error: 'Failed to fetch posts' });
     }
 });
 
