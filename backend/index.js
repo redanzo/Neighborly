@@ -10,6 +10,7 @@ import Alert from './models/alert.js';
 import Event from './models/event.js';
 import LostPet from './models/lostpet.js';
 import Marketplace from './models/marketplace.js';
+import axios from 'axios';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -201,3 +202,28 @@ app.get('/api/posts', async (req, res) => {
 app.listen(1337, () => {
     console.log('Server started on 1337')
 })
+
+app.get('/api/weather', async (req, res) => {
+    const lat = req.query.lat || 32.7767;
+    const lon = req.query.lon || -96.7970; //default set to Dallas TX
+    const apiKey = process.env.OPENWEATHER_API_KEY;
+  
+    try {
+      const response = await axios.get(
+        'https://api.openweathermap.org/data/2.5/weather',
+        {
+          params: {
+            lat,
+            lon,
+            units: 'imperial',
+            appid: apiKey
+          }
+        }
+      );
+      res.json(response.data);
+    } catch (err) {
+      console.error('Weather fetch error:', err.response?.data || err.message); 
+      res.status(500).json({ error: 'Failed to fetch weather' });
+    }
+  });
+  
