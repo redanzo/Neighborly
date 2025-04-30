@@ -17,6 +17,7 @@ import Marketplace from "./components/Marketplace";
 import LostPets from "./components/LostPets";
 import Alerts from "./components/Alerts";
 import Events from "./components/Events";
+import AddItemForm from './components/AddItemForm';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function AppContent() {
         <Route path="/lostpets/:id?" element={<LostPets />} />
         <Route path="/alerts/:id?" element={<Alerts />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/add" element={<AddItemForm />} />
         <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
     </div>

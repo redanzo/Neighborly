@@ -95,7 +95,7 @@ const Alerts = () => {
             />
           </div>
           <hr className="alerts-divider" />
-          <button className="alerts-sidebar-btn">Report an Alert</button>
+          <button className="alerts-sidebar-btn" onClick={() => navigate("/add", { state: { from: "alerts" } })}>Report an Alert</button>
         </div>
 
         {showModal && selectedAlert && (

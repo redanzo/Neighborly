@@ -86,7 +86,7 @@ const LostPets = () => {
             />
           </div>
           <hr className="lostpets-divider" />
-          <button className="lostpets-sidebar-btn">Report Lost Pet</button>
+          <button className="lostpets-sidebar-btn" onClick={() => navigate("/add", { state: { from: "lostpets" } })}>Report Lost Pet</button>
         </div>
 
         {showModal && selectedPet && (

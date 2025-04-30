@@ -7,10 +7,12 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
 import { Badge, ThemeProvider, createTheme } from "@mui/material";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
+import { useNavigate } from "react-router-dom";
 
 import { events as eventData } from "../data";
 
 const Events = () => {
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(dayjs());
 
   // Fix here: format selected date to MM/DD/YYYY to match eventData keys
@@ -83,7 +85,12 @@ const Events = () => {
             ))}
           </ul>
           <div className="event-actions">
-            <button className="event-btn">Add Event</button>
+            <button
+              className="event-btn"
+              onClick={() => navigate("/add", { state: { from: "events" } })}
+            >
+              Add Event
+            </button>
           </div>
         </div>
       </div>

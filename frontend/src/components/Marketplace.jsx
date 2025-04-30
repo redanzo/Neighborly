@@ -114,7 +114,7 @@ const Marketplace = () => {
             <label htmlFor="marketplace-checkbox-free">Free Only</label>
           </div>
           <hr className="marketplace-divider" />
-          <button className="marketplace-sidebar-btn">Add Item</button>
+          <button className="marketplace-sidebar-btn" onClick={() => navigate("/add", { state: { from: "marketplace" } })}>Add Item</button>
         </div>
 
         {/* Item Detail Modal */}
