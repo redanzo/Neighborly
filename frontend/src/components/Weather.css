@@ -1,0 +1,26 @@
+.weather-container {
+    background-color: #f8d9ec; /* soft pink background */
+    padding: 12px;
+    border-radius: 12px;
+    color: #4b2c5e; /* deep purple text */
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .weather-container h3 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #2e143d;
+  }
+  
+  .weather-detail {
+    margin: 4px 0;
+    font-size: 1rem;
+  }
+  
+  .weather-temp {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #301934;
+  }
+  

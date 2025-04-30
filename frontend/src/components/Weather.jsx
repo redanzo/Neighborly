@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from 'react';
+import './Weather.css';
 
 const Weather = () => {
   const [weather, setWeather] = useState(null);
-  const API_KEY = 'd5a3e0fa328397c8174cff2352cb936d'; // API key
 
   useEffect(() => {
-    // For now, use a static location like New York City
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=New York&units=metric&appid=${API_KEY}`)
+    fetch('http://localhost:1337/api/weather')
       .then(res => res.json())
       .then(data => setWeather(data))
-      .catch(err => console.error(err));
+      .catch(err => console.error('Error fetching weather:', err));
   }, []);
 
-  if (!weather) return <p>Loading weather...</p>;
+  if (!weather) return <p className="weather-detail">Loading weather...</p>;
 
   return (
-    <div>
+    <div className="weather-container">
       <h3>{weather.name} Weather</h3>
-      <p>{weather.weather[0].description}</p>
-      <p>Temp: {weather.main.temp}°C</p>
+      <p className="weather-detail">{weather.weather[0].description}</p>
+      <p className="weather-temp">{weather.main.temp}°F</p>
+      <p className="weather-detail">Humidity: {weather.main.humidity}%</p>
+      <p className="weather-detail">Wind: {weather.wind.speed} mph</p>
     </div>
   );
 };

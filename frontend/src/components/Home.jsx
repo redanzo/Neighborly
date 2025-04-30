@@ -2,6 +2,8 @@ import React from "react";
 import "./Home.css";
 import { alerts, events, lostPets, marketplace } from "../data";
 import { useNavigate } from "react-router-dom";
+import Weather from "../components/Weather"; 
+
 
 
 import dayjs from "dayjs";
@@ -104,6 +106,7 @@ const Home = () => {
           <h3 className="section-title">Latest News</h3>
         </section>
 
+
         {/* Marketplace */}
         <section className="box large-box">
           <h3 className="section-title">Marketplace</h3>
@@ -127,7 +130,8 @@ const Home = () => {
 
         {/* Weather */}
         <section className="box small-box">
-          <h3 className="section-title">Weather</h3>
+        <h3 className="section-title">Weather</h3>
+        <Weather />
         </section>
       </main>
     </div>
