@@ -1,34 +1,61 @@
 import React, { useState, useEffect } from "react";
 import "./Alerts.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { alerts } from "../data";
+
+const getStoredAlerts = () => {
+  const stored = localStorage.getItem("alerts");
+  try {
+    const parsed = stored ? JSON.parse(stored) : [];
+    return parsed.reverse().map((item, index) => {
+      let imageUrl = item.image;
+      if (item.image?.data && item.image?.contentType) {
+        imageUrl = `data:${item.image.contentType};base64,${item.image.data}`;
+      }
+
+      return {
+        id: item._id || index + 1,
+        title: item.title || "Untitled",
+        description: item.description || "",
+        image: imageUrl,
+      };
+    });
+  } catch (e) {
+    console.error("Error parsing or normalizing alerts data", e);
+    return [];
+  }
+};
 
 const Alerts = () => {
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredAlerts, setFilteredAlerts] = useState(alerts);
+  const [alertsData, setAlertsData] = useState(getStoredAlerts());
+  const [filteredAlerts, setFilteredAlerts] = useState(alertsData);
 
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-      if (id) {
-        const matchedAlert = alerts.find((alert) => alert.id === Number(id));
-        if (matchedAlert) {
-          setSelectedAlert(matchedAlert);
-          setShowModal(true);
-        }
-      }
-    }, [id]);
-  
+    const updated = getStoredAlerts();
+    setAlertsData(updated);
+  }, []);
 
   useEffect(() => {
-    const filtered = alerts.filter((alert) =>
+    if (id) {
+      const matchedAlert = alertsData.find((alert) => alert.id.toString() === id);
+      if (matchedAlert) {
+        setSelectedAlert(matchedAlert);
+        setShowModal(true);
+      }
+    }
+  }, [id, alertsData]);
+
+  useEffect(() => {
+    const filtered = alertsData.filter((alert) =>
       alert.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredAlerts(filtered);
-  }, [searchTerm]);
+  }, [searchTerm, alertsData]);
 
   const handleAlertClick = (alert) => {
     setSelectedAlert(alert);
@@ -95,7 +122,12 @@ const Alerts = () => {
             />
           </div>
           <hr className="alerts-divider" />
-          <button className="alerts-sidebar-btn" onClick={() => navigate("/add", { state: { from: "alerts" } })}>Report an Alert</button>
+          <button
+            className="alerts-sidebar-btn"
+            onClick={() => navigate("/add", { state: { from: "alerts" } })}
+          >
+            Report an Alert
+          </button>
         </div>
 
         {showModal && selectedAlert && (

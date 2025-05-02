@@ -1,20 +1,48 @@
 import React, { useState, useEffect } from "react";
 import "./LostPets.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { lostPets } from "../data";
+
+const getStoredLostPets = () => {
+  const stored = localStorage.getItem("lostPets");
+  try {
+    const parsed = stored ? JSON.parse(stored) : [];
+    return parsed.reverse().map((item, index) => {
+      let imageUrl = item.image;
+      if (item.image?.data && item.image?.contentType) {
+        imageUrl = `data:${item.image.contentType};base64,${item.image.data}`;
+      }
+      return {
+        id: item._id || index + 1,
+        title: item.title || "Unnamed Pet",
+        image: imageUrl,
+        description: item.description || "",
+        contact: item.email || "N/A",
+      };
+    });
+  } catch (e) {
+    console.error("Error parsing or normalizing lost pets data", e);
+    return [];
+  }
+};
 
 const LostPets = () => {
   const [selectedPet, setSelectedPet] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredPets, setFilteredPets] = useState(lostPets);
+  const [lostPetsData, setLostPetsData] = useState(getStoredLostPets());
+  const [filteredPets, setFilteredPets] = useState(lostPetsData);
 
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
+    const updated = getStoredLostPets();
+    setLostPetsData(updated);
+  }, []);
+
+  useEffect(() => {
     if (id) {
-      const matchedPet = lostPets.find((pet) => pet.id === Number(id));
+      const matchedPet = lostPetsData.find((pet) => pet.id.toString() === id);
       if (matchedPet) {
         setSelectedPet(matchedPet);
         setShowModal(true);
@@ -23,11 +51,11 @@ const LostPets = () => {
   }, [id]);
 
   useEffect(() => {
-    const filtered = lostPets.filter((pet) =>
+    const filtered = lostPetsData.filter((pet) =>
       pet.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredPets(filtered);
-  }, [searchTerm]);
+  }, [searchTerm, lostPetsData]);
 
   const handlePetClick = (pet) => {
     setSelectedPet(pet);
@@ -86,7 +114,12 @@ const LostPets = () => {
             />
           </div>
           <hr className="lostpets-divider" />
-          <button className="lostpets-sidebar-btn" onClick={() => navigate("/add", { state: { from: "lostpets" } })}>Report Lost Pet</button>
+          <button
+            className="lostpets-sidebar-btn"
+            onClick={() => navigate("/add", { state: { from: "lostpets" } })}
+          >
+            Report Lost Pet
+          </button>
         </div>
 
         {showModal && selectedPet && (

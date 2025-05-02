@@ -1,7 +1,36 @@
 import React, { useState, useEffect } from "react";
 import "./Marketplace.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { marketplace } from "../data";
+
+const getStoredMarketplace = () => {
+  const stored = localStorage.getItem("marketplace");
+  try {
+    const parsed = stored ? JSON.parse(stored) : [];
+    return parsed.reverse().map((item, index) => {
+      // Normalize price to string
+      const price = item.price?.toString?.() ?? "0";
+
+      // Handle base64 image
+      let imageUrl = item.image;
+      if (item.image?.data && item.image?.contentType) {
+        imageUrl = `data:${item.image.contentType};base64,${item.image.data}`;
+      }
+
+      return {
+        id: item._id || index + 1,
+        title: item.title || "Untitled",
+        price,
+        image: imageUrl,
+        description: item.description || "",
+        contact: item.email || "N/A",
+      };
+    });
+  } catch (e) {
+    console.error("Error parsing or normalizing marketplace data", e);
+    return [];
+  }
+};
+
 
 const Marketplace = () => {
   // Sample item data
@@ -9,14 +38,20 @@ const Marketplace = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showFreeOnly, setShowFreeOnly] = useState(false);
-  const [filteredItems, setFilteredItems] = useState(marketplace);
+  const [marketplaceData, setMarketplaceData] = useState(getStoredMarketplace());
+  const [filteredItems, setFilteredItems] = useState(marketplaceData);
 
   const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
+    const updated = getStoredMarketplace();
+    setMarketplaceData(updated);
+  }, []);
+
+  useEffect(() => {
     if (id) {
-      const matchedItem = marketplace.find((item) => item.id === Number(id));
+      const matchedItem = marketplaceData.find((item) => item.id.toString() === id);
       if (matchedItem) {
         setSelectedItem(matchedItem);
         setShowModal(true);
@@ -25,7 +60,7 @@ const Marketplace = () => {
   }, [id]);
 
   useEffect(() => {
-    const filtered = marketplace.filter((item) => {
+    const filtered = marketplaceData.filter((item) => {
       // Search filter
       const matchesSearch = item.title
         .toLowerCase()
@@ -37,7 +72,7 @@ const Marketplace = () => {
       return matchesSearch && matchesFree;
     });
     setFilteredItems(filtered);
-  }, [searchTerm, showFreeOnly, marketplace]);
+  }, [searchTerm, showFreeOnly, marketplaceData]);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);

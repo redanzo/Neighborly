@@ -1,23 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import "./Events.css";
 
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { Badge, ThemeProvider, createTheme } from "@mui/material";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import { useNavigate } from "react-router-dom";
 
-import { events as eventData } from "../data";
+// Extend dayjs globally
+dayjs.extend(utc);
+
+// Normalize event data from localStorage
+const getStoredEvents = () => {
+  const stored = localStorage.getItem("events");
+  const result = {};
+
+  try {
+    const parsed = stored ? JSON.parse(stored) : [];
+
+    parsed.forEach((entry) => {
+      const rawDate = entry.date.split("T")[0];
+      const localDate = dayjs(rawDate).format("MM/DD/YYYY");
+      if (!result[localDate]) result[localDate] = [];
+      result[localDate].push(entry.description || "Untitled Event");
+    });
+  } catch (e) {
+    console.error("Failed to parse events from localStorage:", e);
+  }
+
+  return result;
+};
 
 const Events = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(dayjs());
-
-  // Fix here: format selected date to MM/DD/YYYY to match eventData keys
+  const eventData = useMemo(() => getStoredEvents(), []);
   const formattedKey = selectedDate.format("MM/DD/YYYY");
-  const formattedDateDisplay = selectedDate.format("MM/DD/YYYY");
   const eventsForDay = eventData[formattedKey] || ["No events for this day."];
 
   const muiTheme = createTheme({
@@ -43,12 +64,13 @@ const Events = () => {
                   width: "100%",
                   maxWidth: "100%",
                   minWidth: "340px",
-                  transform: "scale(1.25)",
+                  transform: "scale(1.2)",
                   "& .MuiTypography-root": {
                     fontSize: "1.2rem",
                   },
                   "& .MuiDayCalendar-weekDayLabel": {
-                    fontSize: "1rem",
+                    fontSize: "1.2rem",
+                    padding: "0 4px",
                   },
                   "& .MuiPickersDay-root": {
                     fontSize: "1rem",
@@ -58,8 +80,8 @@ const Events = () => {
                 }}
                 slots={{
                   day: (props) => {
-                    const dayKey = dayjs(props.day).format("MM/DD/YYYY"); // ✅ lookup key fixed
-                    const hasEvents = !!eventData[dayKey];
+                    const key = dayjs(props.day).format("MM/DD/YYYY");
+                    const hasEvents = !!eventData[key];
                     return (
                       <Badge
                         color="primary"
@@ -78,7 +100,7 @@ const Events = () => {
         </div>
 
         <div className="events-details">
-          <h3>Events on {formattedDateDisplay}</h3>
+          <h3>Events on {formattedKey}</h3>
           <ul className="event-list">
             {eventsForDay.map((event, i) => (
               <li key={i}>{event}</li>

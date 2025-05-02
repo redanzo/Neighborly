@@ -1,29 +1,79 @@
 import React from "react";
 import "./Home.css";
-import { alerts, events, lostPets, marketplace } from "../data";
 import { useNavigate } from "react-router-dom";
-
-
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 dayjs.extend(isSameOrAfter);
 
+const getStoredData = (key) => {
+  const stored = localStorage.getItem(key);
+  try {
+    const parsed = stored ? JSON.parse(stored) : [];
+    return parsed.reverse().map((item, index) => {
+      let imageUrl = item.image;
+      if (item.image?.data && item.image?.contentType) {
+        imageUrl = `data:${item.image.contentType};base64,${item.image.data}`;
+      }
+      return {
+        id: item._id || index + 1,
+        title: item.title || "Untitled",
+        price: item.price?.toString?.() ?? "0",
+        image: imageUrl,
+        description: item.description || "",
+        contact: item.email || "N/A",
+      };
+    });
+  } catch (e) {
+    console.error(`Error parsing ${key} from localStorage`, e);
+    return [];
+  }
+};
+
+const getStoredEvents = () => {
+  const stored = localStorage.getItem("events");
+  const result = {};
+
+  try {
+    const parsed = stored ? JSON.parse(stored) : [];
+
+    parsed.forEach((entry) => {
+      const rawDate = entry.date.split("T")[0];
+      const localDate = dayjs(rawDate).format("MM/DD/YYYY");
+      if (!result[localDate]) result[localDate] = [];
+      result[localDate].push(entry.description || "Untitled Event");
+    });
+  } catch (e) {
+    console.error("Failed to parse events from localStorage:", e);
+  }
+  console.log(result);
+  return result;
+};
+
+const getUpcomingEvent = (eventsGrouped) => {
+  const today = dayjs().startOf("day");
+
+  const upcomingDates = Object.keys(eventsGrouped)
+    .filter((date) => dayjs(date, "MM/DD/YYYY").isSameOrAfter(today))
+    .sort(
+      (a, b) =>
+        dayjs(a, "MM/DD/YYYY").valueOf() - dayjs(b, "MM/DD/YYYY").valueOf()
+    );
+
+  const firstDate = upcomingDates[0];
+  return firstDate
+    ? { date: firstDate, description: eventsGrouped[firstDate][0] }
+    : null;
+};
+
 const Home = () => {
-    const today = dayjs().startOf("day");
-
-  // Convert keys to actual dayjs objects, filter & sort properly
-  const upcomingDates = Object.keys(events)
-  .filter((date) => dayjs(date, "MM/DD/YYYY").startOf("day").isSameOrAfter(today))
-  .sort(
-    (a, b) =>
-      dayjs(a, "MM/DD/YYYY").valueOf() - dayjs(b, "MM/DD/YYYY").valueOf()
-  );
-
-  const latestEventDate = upcomingDates[0];
-  const latestEvent = latestEventDate ? events[latestEventDate][0] : null;
-
-
   const navigate = useNavigate();
+  const alerts = getStoredData("alerts");
+  const lostPets = getStoredData("lostPets");
+  const marketplace = getStoredData("marketplace");
+  const events = getStoredEvents();
+  const upcomingEvent = getUpcomingEvent(events);
+  const latestEventDate = upcomingEvent?.date ?? null;
+  const latestEvent = upcomingEvent?.description ?? null;
 
   return (
     <div className="home-container">
