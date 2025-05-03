@@ -198,6 +198,29 @@ app.get('/api/posts', async (req, res) => {
     }
 });
 
+app.get('api/delete', async (req, res) => {
+    const { id, type } = req.query;
+
+    try {
+        if (type === 'alert') {
+            await Alert.deleteOne({ _id });
+        } 
+        else if (type === 'event') {
+            await Event.deleteOne({_id });
+        }
+        else if (type === 'lostPet') {
+            await LostPet.deleteOne({ _id });
+        }
+        else if (type === 'marketplace') {
+            await Marketplace.deleteOne({ _id });
+        }
+        return res.json({ status: 'ok' });
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        return res.status(500).json({ status: 'error', error: 'Failed to delete post' });
+    }
+});            
+
 app.listen(1337, () => {
     console.log('Server started on 1337')
 })
