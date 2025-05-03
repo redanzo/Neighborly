@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 import User from './models/user.js';
 import Alert from './models/alert.js';
 import Event from './models/event.js';
-import LostPet from './models/lostpet.js';
+import LostPet from './models/lostPet.js';
 import Marketplace from './models/marketplace.js';
 import axios from 'axios';
 
