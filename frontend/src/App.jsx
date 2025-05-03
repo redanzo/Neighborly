@@ -10,6 +10,7 @@ import {
 
 import Navbar from "./components/Navbar";
 
+import LandingPage from "./components/LandingPage";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
@@ -29,7 +30,7 @@ function App() {
 
 function AppContent() {
   const { pathname } = useLocation();
-  const hideNavbar = ["/login", "/signup"].includes(pathname);
+  const hideNavbar = ["/","/login", "/signup"].includes(pathname);
 
   return (
     <div className="app">
@@ -37,7 +38,7 @@ function AppContent() {
       {!hideNavbar && <Navbar />}
 
       <Routes>
-        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/home" element={<Home />} />
@@ -46,7 +47,7 @@ function AppContent() {
         <Route path="/alerts/:id?" element={<Alerts />} />
         <Route path="/events" element={<Events />} />
         <Route path="/add" element={<AddItemForm />} />
-        <Route path="*" element={<Navigate to="/home" />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
   );

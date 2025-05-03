@@ -1,0 +1,161 @@
+/* Container */
+.landing-container {
+    font-family: sans-serif;
+    color: var(--primary-color);
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  /* Hero */
+  .hero {
+    background: url('/img/Neighborhood.jpg') center/cover no-repeat;
+    height: 80vh;
+    position: relative;
+  }
+  .hero-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 1em;
+  }
+  .hero-overlay h1 {
+    font-size: 3em;
+    color: var(--secondary-color);
+    margin-bottom: 0.5em;
+  }
+  .hero-overlay p {
+    font-size: 1.2em;
+    margin-bottom: 1.5em;
+    color: var(--secondary-color);
+  }
+  
+  /* Call-to-Action Button */
+  .cta-button {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    padding: 0.75em 1.5em;
+    border-radius: 0.5em;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+  }
+  .cta-button:hover {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+  }
+  
+  /* Feature Section */
+  .feature-section {
+    padding: 3em 1em;
+    background-color: var(--secondary-color);
+    text-align: center;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap: 1.5em;
+    margin-top: 2em;
+  }
+  .feature-card {
+    background: var(--accent-color);
+    padding: 1.5em;
+    border-radius: 0.75em;
+    color: var(--primary-color);
+  }
+  .feature-card h3 {
+    margin-top: 0;
+  }
+  .feature-card p {
+    margin-bottom: 0;
+  }
+  
+  /* Comparison */
+.comparison-section {
+    background-color: var(--secondary-color); /* white */
+    padding: 3em 1em;
+    text-align: center;
+  }
+  
+  .comparison-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5em;
+    margin-top: 2em;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .comparison-card {
+    background: white;
+    border-radius: 0.75em;
+    padding: 1.5em;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .comparison-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+  
+  .comparison-card h3 {
+    margin: 0 0 0.5em;
+    font-size: 1.1em;
+    color: var(--primary-color);
+  }
+  
+  .comparison-card p {
+    margin: 0;
+    font-size: 0.95em;
+    color: var(--primary-color);
+  }  
+  
+  /* Benefits */
+  .benefits-section {
+    padding: 3em 1em;
+    background-color: var(--secondary-color);
+    text-align: center;
+  }
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 1.5em;
+    margin-top: 2em;
+  }
+  .benefit-card {
+    background: var(--accent-color);
+    padding: 1.25em;
+    border-radius: 0.75em;
+    color: var(--primary-color);
+  }
+  .benefit-card h4 {
+    margin-top: 0;
+  }
+  
+  /* Final CTA */
+  .cta-section {
+    padding: 2.5em 1em;
+    text-align: center;
+  }
+  .cta-section h2 {
+    margin-bottom: 1em;
+  }
+  
+  /* Footer */
+  .landing-footer {
+    text-align: center;
+    padding: 1em;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    font-size: 0.9em;
+  }
+  
+  /* Responsive tweaks */
+  @media (max-width: 768px) {
+    .hero-overlay h1 { font-size: 2.5em; }
+    .feature-grid, .benefits-grid { grid-template-columns: 1fr; }
+  }  
