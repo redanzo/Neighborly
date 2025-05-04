@@ -13,8 +13,9 @@
   margin-bottom: 3rem;
   padding: 2rem;
   background: white;
-  border-radius: var(--border-radius);
+  border-radius: 25px;
   box-shadow: var(--box-shadow);
+  border: 5px solid var(--accent-color);
 }
 
 .profile-avatar-container {
@@ -73,6 +74,7 @@
   align-items: center;
   gap: 0.5rem;
   color: var(--light-text);
+  border: 2px solid var(--primary-color);
 }
 
 .profile-details {
@@ -82,9 +84,10 @@
 
 .profile-section {
   background: white;
-  border-radius: var(--border-radius);
+  border-radius: 25px;
   padding: 2rem;
   box-shadow: var(--box-shadow);
+  border: 5px solid var(--accent-color);
 }
 
 .section-header {
@@ -134,6 +137,7 @@
   padding: 0.75rem;
   background: var(--secondary-color);
   border-radius: 8px;
+  border: 2px solid var(--primary-color);
 }
 
 .empty-state {
@@ -171,10 +175,11 @@
 
 .post-card {
   background: white;
-  border-radius: var(--border-radius);
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  border: 2px solid var(--primary-color);
 }
 
 .post-card:hover {

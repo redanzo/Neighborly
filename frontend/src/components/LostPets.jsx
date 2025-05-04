@@ -141,7 +141,7 @@ const LostPets = () => {
                   {selectedPet.description}
                 </p>
                 <button className="lostpets-modal-contact">
-                  Contact Owner
+                  {selectedPet.contact}
                 </button>
               </div>
             </div>

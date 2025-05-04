@@ -175,7 +175,7 @@ const Marketplace = () => {
                   {selectedItem.description}
                 </p>
                 <button className="marketplace-modal-contact">
-                  Contact Seller
+                  {selectedItem.contact}
                 </button>
               </div>
             </div>
