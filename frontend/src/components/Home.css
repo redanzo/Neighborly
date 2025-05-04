@@ -109,7 +109,7 @@
 }
 
 .section-title {
-  margin: 0.5em 0;
+  margin: 0.3em 0 !important;
   font-size: 1.2em;
   color: var(--primary-color);
 }
