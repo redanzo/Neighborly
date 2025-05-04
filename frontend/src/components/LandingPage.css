@@ -187,9 +187,6 @@
   max-width: 600px;
   height: auto;
   object-fit: contain;
-}
-
-.hero-img:hover img {
   animation: float 3s ease-in-out infinite, pulse 2s ease-in-out infinite;
 }
 

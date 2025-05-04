@@ -30,7 +30,7 @@
 }
 
 .large-box {
-  padding: 1.5em;
+  padding: 1em 1.5em;
 }
 
 .small-box {
@@ -109,7 +109,7 @@
 }
 
 .section-title {
-  margin: 0 0 0.5em 0;
+  margin: 0.5em 0;
   font-size: 1.2em;
   color: var(--primary-color);
 }

@@ -10,6 +10,7 @@ import Alert from "./models/alert.js";
 import Event from "./models/event.js";
 import LostPet from "./models/lostpet.js";
 import Marketplace from "./models/marketplace.js";
+import axios from 'axios';
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -260,6 +261,27 @@ app.delete("/api/delete/:type/:id", async (req, res) => {
     return res
       .status(500)
       .json({ status: "error", error: "Failed to delete post" });
+  }
+});
+
+app.get('/api/weather', async (req, res) => {
+  const zip = req.query.zip || '75080'; // Default: UTD  - Richardson TX
+  const country = req.query.country || 'US'; // Default: United States
+  const apiKey = process.env.OPENWEATHER_API_KEY;
+
+  try {
+    const response = await axios.get('https://api.openweathermap.org/data/2.5/weather', {
+      params: {
+        zip: `${zip},${country}`,
+        units: 'imperial',
+        appid: apiKey
+      }
+    });
+
+    res.json(response.data);
+  } catch (err) {
+    console.error('Weather fetch error:', err.response?.data || err.message);
+    res.status(500).json({ error: 'Failed to fetch weather' });
   }
 });
 

@@ -3,6 +3,7 @@ import "./Home.css";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import Weather from "./Weather";
 dayjs.extend(isSameOrAfter);
 
 const getStoredData = (key) => {
@@ -176,7 +177,7 @@ const Home = () => {
 
         {/* Weather */}
         <section className="box small-box">
-          <h3 className="section-title">Weather</h3>
+          <Weather />
         </section>
       </main>
     </div>

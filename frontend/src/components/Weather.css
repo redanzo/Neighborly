@@ -1,0 +1,33 @@
+.weather-container {
+  width: 90%;
+  height: 80%;
+  min-height: 100px;
+  overflow: hidden;
+  scroll-behavior: smooth;
+  text-align: center;
+  background-color: var(--primary-color);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(80, 48, 71, 0.1);
+  color: var(--secondary-color);
+}
+
+.weather-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 0.5rem;
+}
+
+.weather-detail {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--secondary-color);
+}
+
+.weather-temp {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 0.4rem;
+  color: var(--secondary-color);
+}
