@@ -14,6 +14,7 @@ import LandingPage from "./components/LandingPage";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
+import Profile from "./components/Profile";
 import Marketplace from "./components/Marketplace";
 import LostPets from "./components/LostPets";
 import Alerts from "./components/Alerts";
@@ -42,6 +43,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/marketplace/:id?" element={<Marketplace />} />
         <Route path="/lostpets/:id?" element={<LostPets />} />
         <Route path="/alerts/:id?" element={<Alerts />} />

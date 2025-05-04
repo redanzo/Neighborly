@@ -13,49 +13,59 @@ const Login = () => {
       alert('Please fill in all fields');
       return;
     }
-
+  
     const response = await fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
+  
     const data = await response.json();
-
+  
     if (data.status === 'ok') {
       localStorage.setItem('token', data.user);
       localStorage.setItem('email', email);
       localStorage.setItem('community', data.community);
-
+  
+      // Fetch user data
+      const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          email: email,
+        }
+      });
+  
+      const userData = await userResponse.json();
+      if (userData.status === 'ok') {
+        localStorage.setItem('user', JSON.stringify(userData.user));
+      }
+  
+      // Fetch posts
       const postResponse = await fetch('/api/posts', {
         method: 'GET',
         headers: {
           community: data.community,
         }
       });
-
+  
       const postData = await postResponse.json();
-
-      if (data.status === 'ok') {
+  
+      if (postData.status === 'ok') {
         localStorage.setItem('alerts', JSON.stringify(postData.alerts));
         localStorage.setItem('events', JSON.stringify(postData.events));
         localStorage.setItem('lostPets', JSON.stringify(postData.lostPets));
         localStorage.setItem('marketplace', JSON.stringify(postData.marketplace));
-
-        console.log('Alerts:', postData.alerts);
-        console.log('Events:', postData.events);
-        console.log('Lost Pets:', postData.lostPets);
-        console.log('Marketplace:', postData.marketplace);
-
+  
         navigate('/home');
+      } else {
+        alert('Error: ' + postData.error);
       }
-      else{
-        alert('Error: ' + data.error);
-      }
-    } 
-    else {
+    } else {
       alert('Error: ' + data.error);
     }
   };
+  
 
   return (
     <div className="auth-container fade-in">

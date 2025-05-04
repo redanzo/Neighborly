@@ -45,7 +45,6 @@ const getStoredEvents = () => {
   } catch (e) {
     console.error("Failed to parse events from localStorage:", e);
   }
-  console.log(result);
   return result;
 };
 

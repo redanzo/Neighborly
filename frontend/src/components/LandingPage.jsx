@@ -1,98 +1,120 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './LandingPage.css';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import "./LandingPage.css";
 
 export default function LandingPage() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 50;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    document.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrolled]);
+
   return (
-    <div className="landing-container">
-      {/* Hero */}
-      <section className="hero">
-        <div className="hero-overlay">
-          <h1>Welcome to Neighborly</h1>
-          <p>Your neighborhood—reimagined online</p>
-          <Link to="/signup" className="cta-button">
-            Get Started
+    <div className="landing-wrapper">
+      <header className={`landing-header ${scrolled ? "scrolled" : ""}`}>
+        <div className="landing-logo">
+          <img src="/img/Neighborly_Logo.png" alt="Neighborly Logo" />
+        </div>
+        <nav className="landing-nav">
+          <Link to="/login" className="landing-btn outline">
+            Login
           </Link>
-        </div>
-      </section>
+          <Link to="/signup" className="landing-btn filled">
+            Sign Up
+          </Link>
+        </nav>
+      </header>
 
-      {/* Features */}
-      <section className="feature-section">
-        <h2 className="section-title">Why Neighborly?</h2>
-        <div className="feature-grid">
-          <div className="feature-card">
-            <h3>Hyper-Local Feed</h3>
-            <p>Only see posts from your immediate neighborhood—no more noise.</p>
-          </div>
-          <div className="feature-card">
-            <h3>Built-In Marketplace</h3>
-            <p>Buy, sell, and swap goods with neighbors you know and trust.</p>
-          </div>
-          <div className="feature-card">
-            <h3>Community Alerts</h3>
-            <p>Get notified of lost pets, safety concerns, and emergency updates.</p>
-          </div>
-          <div className="feature-card">
-            <h3>Event Planning</h3>
-            <p>Organize block parties, meetups, and yard sales—all in one place.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison */}
-        <section className="comparison-section">
-        <h2 className="section-title">Better Than the Rest</h2>
-        <div className="comparison-cards">
-            <div className="comparison-card">
-            <h3>Nextdoor</h3>
-            <p>Great for alerts, weak on commerce.</p>
+      <main className="landing-main">
+        <section className="landing-hero">
+          <div className="hero-text">
+            <h1>Bringing Neighbors Together</h1>
+            <p>
+              Connect, share, and thrive in your local community with
+              Neighborly.
+            </p>
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <Link to="/signup" className="landing-btn filled">
+                Join Now
+              </Link>
             </div>
-            <div className="comparison-card">
-            <h3>Facebook</h3>
-            <p>Broad reach, zero neighborhood focus.</p>
-            </div>
-            <div className="comparison-card">
-            <h3>Craigslist</h3>
-            <p>Marketplace only, no community tools.</p>
-            </div>
-        </div>
+          </div>
+          <div className="hero-img">
+            <img src="/img/Neighborhood.jpg" alt="Community Graphic" />
+          </div>
         </section>
 
+        <section className="landing-features">
+          <h2>Why Neighborly?</h2>
+          <div className="features-grid">
+            <div className="feature-card">
+              <h3>🛍️ Neighborhood Marketplace</h3>
+              <p>
+                Buy, sell, and trade items directly with trusted neighbors in
+                your community.
+              </p>
+            </div>
+            <div className="feature-card">
+              <h3>🐾 Lost & Found Pets</h3>
+              <p>
+                Report and discover lost or found pets to quickly reunite furry
+                friends with their owners.
+              </p>
+            </div>
+            <div className="feature-card">
+              <h3>🚨 Community Alerts</h3>
+              <p>
+                Stay informed about nearby crime reports, safety hazards, and
+                emergency situations.
+              </p>
+            </div>
+            <div className="feature-card">
+              <h3>🎉 Local Events & Activities</h3>
+              <p>
+                Attend and promote neighborhood gatherings, block parties,
+                cleanups, and community meetings.
+              </p>
+            </div>
+          </div>
+        </section>
 
-      {/* Benefits */}
-      <section className="benefits-section">
-        <h2 className="section-title">Our Advantages</h2>
-        <div className="benefits-grid">
-          <div className="benefit-card">
-            <h4>Trusted Connections</h4>
-            <p>Verified neighbors build real trust.</p>
+        <section className="landing-cta">
+          <h2>Start Connecting Today</h2>
+          <p>
+            Join thousands of neighborhoods already building stronger
+            communities on Neighborly.
+          </p>
+          <div>
+            <Link to="/signup" className="landing-btn filled">
+              Get Started
+            </Link>
+            <Link to="/login" className="landing-btn outline">
+              See Demo
+            </Link>
           </div>
-          <div className="benefit-card">
-            <h4>Single App</h4>
-            <p>Community, commerce, and planning in one place.</p>
-          </div>
-          <div className="benefit-card">
-            <h4>Safety First</h4>
-            <p>Fast, secure alerts keep everyone informed.</p>
-          </div>
-          <div className="benefit-card">
-            <h4>Skill Sharing</h4>
-            <p>Offer or request services and build local networks.</p>
-          </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      {/* Call to Action */}
-      <section className="cta-section">
-        <h2>Ready to Join Your Digital Neighborhood?</h2>
-        <Link to="/signup" className="cta-button">
-          Create Your Account
-        </Link>
-      </section>
-
-      {/* Footer */}
       <footer className="landing-footer">
-        <p>© {new Date().getFullYear()} Neighborly. All rights reserved.</p>
+        <div className="footer-content">
+          <p>© {new Date().getFullYear()} Neighborly. All rights reserved.</p>
+          <Link to="/" style={{ color: "white", opacity: 0.8 }}>
+            Privacy Policy
+          </Link>
+          <Link to="/" style={{ color: "white", opacity: 0.8 }}>
+            Terms of Service
+          </Link>
+        </div>
       </footer>
     </div>
   );
