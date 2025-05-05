@@ -1,6 +1,6 @@
 .lostpets-container {
   background-color: var(--accent-color);
-  height: 100vh;
+  /* height: 100vh; */
   /* width: 100vw; */
   display: flex;
   flex-direction: column;
@@ -128,7 +128,7 @@
 .lostpets-divider {
   border: none;
   border-top: 2px solid var(--primary-color);
-  margin: 0.5em 0 26.5em 0;
+  margin: 0.5em 0 28em 0;
 }
 
 .lostpets-sidebar-btn {
@@ -144,6 +144,76 @@
 }
 
 .lostpets-sidebar-btn:hover {
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+}
+
+.lostpets-post-card {
+  display: flex;
+  flex-direction: column;
+  height: 320px;
+  min-height: 300px;
+  max-height: 360px;
+  border-radius: 12px;
+  background-color: var(--secondary-color);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 3px solid var(--primary-color);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.lostpets-post-card:hover {
+  transform: translateY(-5px);
+}
+
+.lostpets-post-image {
+  width: 100%;
+  height: 160px;
+  background-size: cover;
+  background-position: center;
+}
+
+.lostpets-post-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lostpets-post-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.lostpets-post-description {
+  font-size: 0.95rem;
+  color: #444;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.lostpets-post-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.lostpets-contact-btn {
+  padding: 0.4em 1em;
+  border-radius: 20px;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-weight: bold;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.lostpets-contact-btn:hover {
   background-color: var(--accent-color);
   color: var(--primary-color);
 }

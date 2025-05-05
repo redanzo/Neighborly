@@ -10,7 +10,7 @@ import Alert from "./models/alert.js";
 import Event from "./models/event.js";
 import LostPet from "./models/lostpet.js";
 import Marketplace from "./models/marketplace.js";
-import axios from 'axios';
+import axios from "axios";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -264,50 +264,59 @@ app.delete("/api/delete/:type/:id", async (req, res) => {
   }
 });
 
-app.get('/api/weather', async (req, res) => {
-  const zip = req.query.zip || '75080'; // Default: UTD  - Richardson TX
-  const country = req.query.country || 'US'; // Default: United States
+app.get("/api/weather", async (req, res) => {
+  const zip = req.query.zip || "75080";
+  const country = req.query.country || "US";
   const apiKey = process.env.OPENWEATHER_API_KEY;
 
   try {
-    const response = await axios.get('https://api.openweathermap.org/data/2.5/weather', {
-      params: {
-        zip: `${zip},${country}`,
-        units: 'imperial',
-        appid: apiKey
+    const response = await axios.get(
+      "https://api.openweathermap.org/data/2.5/weather",
+      {
+        params: {
+          zip: `${zip},${country}`,
+          units: "imperial",
+          appid: apiKey,
+        },
       }
-    });
+    );
 
     res.json(response.data);
   } catch (err) {
-    console.error('Weather fetch error:', err.response?.data || err.message);
-    res.status(500).json({ error: 'Failed to fetch weather' });
+    console.error("Weather fetch error:", err.response?.data || err.message);
+    res.status(500).json({ error: "Failed to fetch weather" });
   }
 });
 
-app.get('/api/news', async (req, res) => {
-  const location = req.query.q || 'Dallas';
+app.get("/api/news", async (req, res) => {
+  const location = req.query.q || "Dallas";
   const apiKey = process.env.NEWS_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'Missing NEWS_API_KEY in environment' });
+    return res
+      .status(500)
+      .json({ error: "Missing NEWS_API_KEY in environment" });
   }
 
   try {
-    const response = await axios.get('https://newsapi.org/v2/everything', {
+    const response = await axios.get("https://newsapi.org/v2/everything", {
       params: {
+        language: "en",
         q: location,
-        sortBy: 'publishedAt',
+        sortBy: "publishedAt",
         pageSize: 1,
-        apiKey: apiKey
-      }
+        apiKey: apiKey,
+      },
     });
 
     const latestArticle = response.data.articles[0] || null;
     return res.json({ article: latestArticle });
   } catch (error) {
-    console.error('Error fetching news:', error.response?.data || error.message);
-    return res.status(500).json({ error: 'Failed to fetch news' });
+    console.error(
+      "Error fetching news:",
+      error.response?.data || error.message
+    );
+    return res.status(500).json({ error: "Failed to fetch news" });
   }
 });
 

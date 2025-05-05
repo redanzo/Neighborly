@@ -79,23 +79,25 @@ const LostPets = () => {
           {filteredPets.map((pet) => (
             <div
               key={pet.id}
-              className="lostpets-box"
+              className="lostpets-post-card"
               onClick={() => handlePetClick(pet)}
             >
-              <div
-                className="lostpets-box-top"
-                style={{ backgroundImage: `url(${pet.image})` }}
-              ></div>
-              <div className="lostpets-box-bottom">
-                <span className="lostpets-item-title">{pet.title}</span>
+              {pet.image ? (
+                <div
+                  className="lostpets-post-image"
+                  style={{ backgroundImage: `url(${pet.image})` }}
+                />
+              ) : (
+                <div className="lostpets-post-image lostpets-placeholder">
+                  <span>No Image</span>
+                </div>
+              )}
+              <div className="lostpets-post-content">
+                <h3 className="lostpets-post-title">{pet.title}</h3>
+                <p className="lostpets-post-description">{pet.description}</p>
               </div>
             </div>
           ))}
-          {filteredPets.length === 0 && (
-            <div className="lostpets-no-results">
-              No pets match your search criteria
-            </div>
-          )}
         </div>
 
         <div className="lostpets-sidebar">

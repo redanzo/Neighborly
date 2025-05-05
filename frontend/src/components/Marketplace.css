@@ -1,6 +1,6 @@
 .marketplace-container {
   background-color: var(--accent-color);
-  height: 100vh;
+  /* height: 100vh; */
   /* width: 100vw; */
   display: flex;
   flex-direction: column;
@@ -24,61 +24,83 @@
   box-sizing: border-box;
 }
 
-.marketplace-box {
-  background-color: var(--secondary-color);
-  border-radius: 1em;
-  border: 5px solid var(--primary-color);
-  overflow: hidden;
+.marketplace-post-card {
   display: flex;
   flex-direction: column;
-  height: 200px;
-  box-shadow: rgba(80, 48, 71, 0.2) 0px 4px 12px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.marketplace-box:hover {
-  transform: scale(1.03);
-  box-shadow: rgba(80, 48, 71, 0.3) 0px 6px 16px;
-}
-
-.marketplace-box-top {
-  flex: 2;
+  height: 320px;
+  min-height: 300px;
+  max-height: 360px;
+  border-radius: 12px;
   background-color: var(--secondary-color);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 3px solid var(--primary-color);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.marketplace-post-card:hover {
+  transform: translateY(-5px);
+}
+
+.marketplace-post-image {
+  width: 100%;
+  height: 160px;
   background-size: cover;
   background-position: center;
-  position: relative;
-  transition: all 0.3s ease;
 }
 
-.marketplace-item-price {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(232, 196, 223, 0.75);
-  color: var(--primary-color);
-  padding: 8px;
-  font-size: 0.9em;
-  text-align: center;
-  transform: none;
-  transition: none;
-}
-
-.marketplace-box-bottom {
-  flex: 1;
-  background-color: var(--primary-color);
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+.marketplace-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #777;
+  font-size: 0.9rem;
+  background-color: #eee;
 }
 
-.marketplace-item-title {
+.marketplace-post-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.marketplace-post-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.marketplace-post-description {
+  font-size: 0.95rem;
+  color: #444;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.marketplace-post-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.marketplace-price-btn {
+  padding: 0.4em 1em;
+  border-radius: 20px;
+  background-color: var(--primary-color);
   color: var(--secondary-color);
   font-weight: bold;
-  font-size: 1.2em;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.marketplace-price-btn:hover {
+  background-color: var(--accent-color);
+  color: var(--primary-color);
 }
 
 .marketplace-sidebar {
@@ -183,7 +205,7 @@
 .marketplace-divider {
   border: none;
   border-top: 2px solid var(--primary-color);
-  margin: 0.5em 0 22em 0;
+  margin: 0.5em 0 23.5em 0;
 }
 
 .marketplace-sidebar-btn {

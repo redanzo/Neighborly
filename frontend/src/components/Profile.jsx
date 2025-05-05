@@ -23,7 +23,7 @@ const Profile = () => {
       const data = JSON.parse(localStorage.getItem(cat)) || [];
       data.forEach((post) => {
         if (post.email === storedUser.email) {
-          posts.push({ ...post, category: cat }); // Add category here
+          posts.push({ ...post, category: cat });
         }
       });
     });
@@ -52,12 +52,10 @@ const Profile = () => {
       const data = await response.json();
 
       if (data.status === "ok") {
-        // Remove post from localStorage
         const posts = JSON.parse(localStorage.getItem(category)) || [];
         const updated = posts.filter((p) => p._id !== postId);
         localStorage.setItem(category, JSON.stringify(updated));
 
-        // Remove post from UI
         setUserPosts((prev) => prev.filter((p) => p._id !== postId));
       } else {
         alert("Failed to delete post.");

@@ -10,10 +10,8 @@ import { Badge, ThemeProvider, createTheme } from "@mui/material";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import { useNavigate } from "react-router-dom";
 
-// Extend dayjs globally
 dayjs.extend(utc);
 
-// Normalize event data from localStorage
 const getStoredEvents = () => {
   const stored = localStorage.getItem("events");
   const result = {};

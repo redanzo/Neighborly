@@ -42,7 +42,9 @@ const Alerts = () => {
 
   useEffect(() => {
     if (id) {
-      const matchedAlert = alertsData.find((alert) => alert.id.toString() === id);
+      const matchedAlert = alertsData.find(
+        (alert) => alert.id.toString() === id
+      );
       if (matchedAlert) {
         setSelectedAlert(matchedAlert);
         setShowModal(true);
@@ -79,23 +81,26 @@ const Alerts = () => {
           {filteredAlerts.map((alert) => (
             <div
               key={alert.id}
-              className="alerts-box"
+              className={
+                alert.image ? "alerts-post-card" : "alerts-box-noimage"
+              }
               onClick={() => handleAlertClick(alert)}
             >
               {alert.image ? (
                 <>
                   <div
-                    className="alerts-box-top"
+                    className="alerts-post-image"
                     style={{ backgroundImage: `url(${alert.image})` }}
                   ></div>
-                  <div className="alerts-box-bottom">
-                    <span className="alerts-item-title">{alert.title}</span>
+                  <div className="alerts-post-content">
+                    <h3 className="alerts-post-title">{alert.title}</h3>
+                    <p className="alerts-post-description">
+                      {alert.description}
+                    </p>
                   </div>
                 </>
               ) : (
-                <div className="alerts-box-noimage">
-                  <span className="alerts-item-title">{alert.title}</span>
-                </div>
+                <span className="alerts-item-title">{alert.title}</span>
               )}
             </div>
           ))}

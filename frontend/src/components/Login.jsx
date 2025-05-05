@@ -27,7 +27,6 @@ const Login = () => {
       localStorage.setItem('email', email);
       localStorage.setItem('community', data.community);
   
-      // Fetch user data
       const userResponse = await fetch('/api/user', {
         method: 'GET',
         headers: {
@@ -41,7 +40,7 @@ const Login = () => {
         localStorage.setItem('user', JSON.stringify(userData.user));
       }
   
-      // Fetch posts
+      
       const postResponse = await fetch('/api/posts', {
         method: 'GET',
         headers: {

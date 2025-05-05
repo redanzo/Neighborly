@@ -7,10 +7,8 @@ const getStoredMarketplace = () => {
   try {
     const parsed = stored ? JSON.parse(stored) : [];
     return parsed.reverse().map((item, index) => {
-      // Normalize price to string
       const price = item.price?.toString?.() ?? "0";
 
-      // Handle base64 image
       let imageUrl = item.image;
       if (item.image?.data && item.image?.contentType) {
         imageUrl = `data:${item.image.contentType};base64,${item.image.data}`;
@@ -31,14 +29,14 @@ const getStoredMarketplace = () => {
   }
 };
 
-
 const Marketplace = () => {
-  // Sample item data
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showFreeOnly, setShowFreeOnly] = useState(false);
-  const [marketplaceData, setMarketplaceData] = useState(getStoredMarketplace());
+  const [marketplaceData, setMarketplaceData] = useState(
+    getStoredMarketplace()
+  );
   const [filteredItems, setFilteredItems] = useState(marketplaceData);
 
   const navigate = useNavigate();
@@ -51,7 +49,9 @@ const Marketplace = () => {
 
   useEffect(() => {
     if (id) {
-      const matchedItem = marketplaceData.find((item) => item.id.toString() === id);
+      const matchedItem = marketplaceData.find(
+        (item) => item.id.toString() === id
+      );
       if (matchedItem) {
         setSelectedItem(matchedItem);
         setShowModal(true);
@@ -61,12 +61,10 @@ const Marketplace = () => {
 
   useEffect(() => {
     const filtered = marketplaceData.filter((item) => {
-      // Search filter
       const matchesSearch = item.title
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
 
-      // Free filter
       const matchesFree = !showFreeOnly || item.price === "0";
 
       return matchesSearch && matchesFree;
@@ -101,17 +99,23 @@ const Marketplace = () => {
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className="marketplace-box"
+              className="marketplace-post-card"
               onClick={() => handleItemClick(item)}
             >
               <div
-                className="marketplace-box-top"
+                className="marketplace-post-image"
                 style={{ backgroundImage: `url(${item.image})` }}
-              >
-                <div className="marketplace-item-price">${item.price}</div>
-              </div>
-              <div className="marketplace-box-bottom">
-                <span className="marketplace-item-title">{item.title}</span>
+              />
+              <div className="marketplace-post-content">
+                <h3 className="marketplace-post-title">{item.title}</h3>
+                <p className="marketplace-post-description">
+                  {item.description}
+                </p>
+                <div className="marketplace-post-actions">
+                  <button className="marketplace-price-btn">
+                    ${item.price}
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -149,7 +153,12 @@ const Marketplace = () => {
             <label htmlFor="marketplace-checkbox-free">Free Only</label>
           </div>
           <hr className="marketplace-divider" />
-          <button className="marketplace-sidebar-btn" onClick={() => navigate("/add", { state: { from: "marketplace" } })}>Add Item</button>
+          <button
+            className="marketplace-sidebar-btn"
+            onClick={() => navigate("/add", { state: { from: "marketplace" } })}
+          >
+            Add Item
+          </button>
         </div>
 
         {/* Item Detail Modal */}

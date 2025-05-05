@@ -79,6 +79,8 @@ const Home = () => {
   return (
     <div className="home-container">
       <main className="grid-container">
+
+        
         {/* Emergency Alerts */}
         <section className="box large-box">
           <h3 className="section-title">Emergency Alerts</h3>
@@ -152,7 +154,6 @@ const Home = () => {
 
         {/* Latest News */}
         <section className="box small-box">
-          {/* <h3 className="section-title">Latest News</h3> */}
           <News />
         </section>
 

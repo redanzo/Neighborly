@@ -1,4 +1,3 @@
-// App.jsx
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -35,7 +34,6 @@ function AppContent() {
 
   return (
     <div className="app">
-      {/* this will now re‑evaluate on every route change */}
       {!hideNavbar && <Navbar />}
 
       <Routes>
