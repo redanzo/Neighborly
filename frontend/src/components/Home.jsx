@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import Weather from "./Weather";
+import News from "./News";
 dayjs.extend(isSameOrAfter);
 
 const getStoredData = (key) => {
@@ -151,7 +152,8 @@ const Home = () => {
 
         {/* Latest News */}
         <section className="box small-box">
-          <h3 className="section-title">Latest News</h3>
+          {/* <h3 className="section-title">Latest News</h3> */}
+          <News />
         </section>
 
         {/* Marketplace */}

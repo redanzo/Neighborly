@@ -99,7 +99,7 @@ export default function LandingPage() {
               Get Started
             </Link>
             <Link to="/login" className="landing-btn outline">
-              See Demo
+              Add Your Community Today!
             </Link>
           </div>
         </section>

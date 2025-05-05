@@ -285,6 +285,32 @@ app.get('/api/weather', async (req, res) => {
   }
 });
 
+app.get('/api/news', async (req, res) => {
+  const location = req.query.q || 'Dallas';
+  const apiKey = process.env.NEWS_API_KEY;
+
+  if (!apiKey) {
+    return res.status(500).json({ error: 'Missing NEWS_API_KEY in environment' });
+  }
+
+  try {
+    const response = await axios.get('https://newsapi.org/v2/everything', {
+      params: {
+        q: location,
+        sortBy: 'publishedAt',
+        pageSize: 1,
+        apiKey: apiKey
+      }
+    });
+
+    const latestArticle = response.data.articles[0] || null;
+    return res.json({ article: latestArticle });
+  } catch (error) {
+    console.error('Error fetching news:', error.response?.data || error.message);
+    return res.status(500).json({ error: 'Failed to fetch news' });
+  }
+});
+
 app.listen(1337, () => {
   console.log("Server started on 1337");
 });
