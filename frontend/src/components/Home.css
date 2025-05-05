@@ -114,6 +114,10 @@
   color: var(--primary-color);
 }
 
+.small-box .section-title {
+  text-align: center;
+}
+
 .post-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

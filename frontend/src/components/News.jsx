@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import "./News.css";
 
 const News = () => {
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  const city = storedUser?.city || "Richardson";
-
   const [article, setArticle] = useState(null);
 
   useEffect(() => {
-    fetch(`/api/news?city=${encodeURIComponent(city)}`)
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const city = storedUser?.city || "Richardson";
+    const state = storedUser?.state || "TX";
+  
+    const location = `${city} ${state}`;
+  
+    fetch(`/api/news?city=${encodeURIComponent(location)}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch news");
         return res.json();
@@ -21,7 +24,8 @@ const News = () => {
         console.error("News fetch error:", err);
         setArticle(null);
       });
-  }, [city]);
+  }, []);
+  
 
   return (
     <div className="news-container">
