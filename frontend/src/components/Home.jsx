@@ -1,32 +1,55 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import localforage from "localforage";
+
 import Weather from "./Weather";
 import News from "./News";
+
 dayjs.extend(isSameOrAfter);
 
-const getStoredData = (key) => {
-  const stored = localStorage.getItem(key);
+const getStoredData = async (key) => {
   try {
-    const parsed = stored ? JSON.parse(stored) : [];
-    return parsed.reverse().map((item, index) => {
-      let imageUrl = item.image;
-      if (item.image?.data && item.image?.contentType) {
-        imageUrl = `data:${item.image.contentType};base64,${item.image.data}`;
-      }
-      return {
-        id: item._id || index + 1,
-        title: item.title || "Untitled",
-        price: item.price?.toString?.() ?? "0",
-        image: imageUrl,
-        description: item.description || "",
-        contact: item.email || "N/A",
-      };
-    });
-  } catch (e) {
-    console.error(`Error parsing ${key} from localStorage`, e);
+    const stored = await localforage.getItem(key);
+    if (!stored) return [];
+
+    let items;
+    if (Array.isArray(stored)) {
+      // happy path: you really stored an Array
+      items = stored;
+    } else if (typeof stored === "string") {
+      // maybe you JSON.stringified it
+      items = JSON.parse(stored);
+    } else if (typeof stored === "object") {
+      // you might have stored a map of id→item
+      items = Object.values(stored);
+    } else {
+      // some other odd shape
+      console.warn(`Unexpected type for ${key}:`, typeof stored);
+      return [];
+    }
+
+    return items
+      .slice()          // don’t mutate the original
+      .reverse()
+      .map((item, i) => {
+        let imageUrl = item.image;
+        if (item.image?.data && item.image?.contentType) {
+          imageUrl = `data:${item.image.contentType};base64,${item.image.data}`;
+        }
+        return {
+          id: item._id ?? i + 1,
+          title: item.title || "Untitled",
+          price: item.price?.toString() ?? "0",
+          image: imageUrl,
+          description: item.description || "",
+          contact: item.email || "N/A",
+        };
+      });
+  } catch (err) {
+    console.error(`Error reading "${key}" from localforage:`, err);
     return [];
   }
 };
@@ -37,7 +60,6 @@ const getStoredEvents = () => {
 
   try {
     const parsed = stored ? JSON.parse(stored) : [];
-
     parsed.forEach((entry) => {
       const rawDate = entry.date.split("T")[0];
       const localDate = dayjs(rawDate).format("MM/DD/YYYY");
@@ -52,14 +74,12 @@ const getStoredEvents = () => {
 
 const getUpcomingEvent = (eventsGrouped) => {
   const today = dayjs().startOf("day");
-
   const upcomingDates = Object.keys(eventsGrouped)
     .filter((date) => dayjs(date, "MM/DD/YYYY").isSameOrAfter(today))
     .sort(
       (a, b) =>
         dayjs(a, "MM/DD/YYYY").valueOf() - dayjs(b, "MM/DD/YYYY").valueOf()
     );
-
   const firstDate = upcomingDates[0];
   return firstDate
     ? { date: firstDate, description: eventsGrouped[firstDate][0] }
@@ -68,9 +88,28 @@ const getUpcomingEvent = (eventsGrouped) => {
 
 const Home = () => {
   const navigate = useNavigate();
-  const alerts = getStoredData("alerts");
-  const lostPets = getStoredData("lostPets");
-  const marketplace = getStoredData("marketplace");
+
+  // --- state for everything we now load asynchronously ---
+  const [alerts, setAlerts] = useState([]);
+  const [lostPets, setLostPets] = useState([]);
+  const [marketplace, setMarketplace] = useState([]);
+
+  useEffect(() => {
+    // fetch all three lists in parallel
+    const loadAll = async () => {
+      const [a, p, m] = await Promise.all([
+        getStoredData("alerts"),
+        getStoredData("lostPets"),
+        getStoredData("marketplace"),
+      ]);
+      setAlerts(a);
+      setLostPets(p);
+      setMarketplace(m);
+    };
+    loadAll();
+  }, []);
+
+  // events remain in localStorage
   const events = getStoredEvents();
   const upcomingEvent = getUpcomingEvent(events);
   const latestEventDate = upcomingEvent?.date ?? null;
@@ -79,8 +118,6 @@ const Home = () => {
   return (
     <div className="home-container">
       <main className="grid-container">
-
-        
         {/* Emergency Alerts */}
         <section className="box large-box">
           <h3 className="section-title">Emergency Alerts</h3>
