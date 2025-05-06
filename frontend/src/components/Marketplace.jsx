@@ -1,94 +1,103 @@
 import React, { useState, useEffect } from "react";
 import "./Marketplace.css";
 import { useParams, useNavigate } from "react-router-dom";
+import localforage from "localforage";
 
-const getStoredMarketplace = () => {
-  const stored = localStorage.getItem("marketplace");
+// Async helper for marketplace data
+const getStoredMarketplace = async () => {
   try {
-    const parsed = stored ? JSON.parse(stored) : [];
-    return parsed.reverse().map((item, index) => {
-      const price = item.price?.toString?.() ?? "0";
+    const stored = await localforage.getItem("marketplace");
+    if (!stored) return [];
 
-      let imageUrl = item.image;
-      if (item.image?.data && item.image?.contentType) {
-        imageUrl = `data:${item.image.contentType};base64,${item.image.data}`;
-      }
+    let items;
+    if (Array.isArray(stored)) {
+      items = stored;
+    } else if (typeof stored === "string") {
+      items = JSON.parse(stored);
+    } else if (typeof stored === "object") {
+      items = Object.values(stored);
+    } else {
+      console.warn("Unexpected type for marketplace:", typeof stored);
+      return [];
+    }
 
-      return {
-        id: item._id || index + 1,
-        title: item.title || "Untitled",
-        price,
-        image: imageUrl,
-        description: item.description || "",
-        contact: item.email || "N/A",
-      };
-    });
+    return items
+      .slice()
+      .reverse()
+      .map((item, index) => {
+        const price = item.price?.toString() ?? "0";
+        let imageUrl = item.image;
+        if (item.image?.data && item.image?.contentType) {
+          imageUrl = `data:${item.image.contentType};base64,${item.image.data}`;
+        }
+        return {
+          id: item._id ?? index + 1,
+          title: item.title || "Untitled",
+          price,
+          image: imageUrl,
+          description: item.description || "",
+          contact: item.email || "N/A",
+        };
+      });
   } catch (e) {
-    console.error("Error parsing or normalizing marketplace data", e);
+    console.error("Error loading marketplace from localForage", e);
     return [];
   }
 };
 
 const Marketplace = () => {
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [marketplaceData, setMarketplaceData] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showFreeOnly, setShowFreeOnly] = useState(false);
-  const [marketplaceData, setMarketplaceData] = useState(
-    getStoredMarketplace()
-  );
-  const [filteredItems, setFilteredItems] = useState(marketplaceData);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
   const { id } = useParams();
 
+  // Load data once on mount
   useEffect(() => {
-    const updated = getStoredMarketplace();
-    setMarketplaceData(updated);
+    const loadData = async () => {
+      const data = await getStoredMarketplace();
+      setMarketplaceData(data);
+    };
+    loadData();
   }, []);
 
-  useEffect(() => {
-    if (id) {
-      const matchedItem = marketplaceData.find(
-        (item) => item.id.toString() === id
-      );
-      if (matchedItem) {
-        setSelectedItem(matchedItem);
-        setShowModal(true);
-      }
-    }
-  }, [id]);
-
+  // When marketplaceData or filters change, recompute filteredItems
   useEffect(() => {
     const filtered = marketplaceData.filter((item) => {
       const matchesSearch = item.title
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
-
       const matchesFree = !showFreeOnly || item.price === "0";
-
       return matchesSearch && matchesFree;
     });
     setFilteredItems(filtered);
-  }, [searchTerm, showFreeOnly, marketplaceData]);
+  }, [marketplaceData, searchTerm, showFreeOnly]);
+
+  // If URL has an `:id`, open that item in the modal
+  useEffect(() => {
+    if (id && marketplaceData.length) {
+      const match = marketplaceData.find((it) => it.id.toString() === id);
+      if (match) {
+        setSelectedItem(match);
+        setShowModal(true);
+      }
+    }
+  }, [id, marketplaceData]);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
     setShowModal(true);
+    navigate(`/marketplace/${item.id}`);
   };
 
   const closeModal = () => {
     setShowModal(false);
     setSelectedItem(null);
     navigate("/marketplace");
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleFreeFilterChange = (e) => {
-    setShowFreeOnly(e.target.checked);
   };
 
   return (
@@ -139,7 +148,7 @@ const Marketplace = () => {
               placeholder="Search"
               className="marketplace-search-input"
               value={searchTerm}
-              onChange={handleSearchChange}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
@@ -148,14 +157,16 @@ const Marketplace = () => {
               type="checkbox"
               id="marketplace-checkbox-free"
               checked={showFreeOnly}
-              onChange={handleFreeFilterChange}
+              onChange={(e) => setShowFreeOnly(e.target.checked)}
             />
             <label htmlFor="marketplace-checkbox-free">Free Only</label>
           </div>
           <hr className="marketplace-divider" />
           <button
             className="marketplace-sidebar-btn"
-            onClick={() => navigate("/add", { state: { from: "marketplace" } })}
+            onClick={() =>
+              navigate("/add", { state: { from: "marketplace" } })
+            }
           >
             Add Item
           </button>
@@ -168,13 +179,16 @@ const Marketplace = () => {
               className="marketplace-modal"
               onClick={(e) => e.stopPropagation()}
             >
-              <button className="marketplace-modal-close" onClick={closeModal}>
+              <button
+                className="marketplace-modal-close"
+                onClick={closeModal}
+              >
                 ×
               </button>
               <div
                 className="marketplace-modal-image"
                 style={{ backgroundImage: `url(${selectedItem.image})` }}
-              ></div>
+              />
               <div className="marketplace-modal-content">
                 <h2>{selectedItem.title}</h2>
                 <div className="marketplace-modal-price">

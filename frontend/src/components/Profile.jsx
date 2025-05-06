@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./Profile.css";
+import { useNavigate } from "react-router-dom";
+import localforage from "localforage";
 
 const Profile = () => {
   const [userData, setUserData] = useState({});
   const [userPosts, setUserPosts] = useState([]);
+  const navigate = useNavigate();
 
+  // load user from localStorage
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser?.email) {
@@ -12,49 +16,83 @@ const Profile = () => {
     }
   }, []);
 
+  // load this user's posts from marketplace, lostPets, alerts via localForage,
+  // and from events via localStorage
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser?.email) return;
+    if (!userData.email) return;
 
-    const categories = ["marketplace", "lostPets", "alerts", "events"];
-    let posts = [];
+    const loadPosts = async () => {
+      const categories = ["marketplace", "lostPets", "alerts", "events"];
+      const posts = [];
 
-    categories.forEach((cat) => {
-      const data = JSON.parse(localStorage.getItem(cat)) || [];
-      data.forEach((post) => {
-        if (post.email === storedUser.email) {
-          posts.push({ ...post, category: cat });
+      for (const cat of categories) {
+        let items;
+        if (cat === "marketplace" || cat === "lostPets" || cat === "alerts") {
+          const stored = await localforage.getItem(cat);
+          if (!stored) continue;
+          if (Array.isArray(stored)) {
+            items = stored;
+          } else if (typeof stored === "string") {
+            items = JSON.parse(stored);
+          } else if (typeof stored === "object") {
+            items = Object.values(stored);
+          } else {
+            continue;
+          }
+        } else {
+          // events still in localStorage
+          items = JSON.parse(localStorage.getItem(cat)) || [];
         }
-      });
-    });
 
-    setUserPosts(posts);
+        items.forEach((post) => {
+          if (post.email === userData.email) {
+            posts.push({ ...post, category: cat });
+          }
+        });
+      }
+
+      setUserPosts(posts);
+    };
+
+    loadPosts();
   }, [userData]);
 
   const handleDelete = async (postId, category) => {
-    if (!window.confirm("Are you sure you want to delete this post?")) return;
-    let type;
+    if (!window.confirm("Are you sure you want to delete this post?"))
+      return;
 
-    if(category === "alerts") {
-        type = "alert";
-    } else if (category === "lostPets") {
-        type = "lostPet";
-    } else if(category === "events") {
-        type = "event";
-    } else if (category === "marketplace") {
-        type = "marketplace";
-    }
+    let type =
+      category === "alerts"
+        ? "alert"
+        : category === "lostPets"
+        ? "lostPet"
+        : category === "events"
+        ? "event"
+        : "marketplace";
 
     try {
-      const response = await fetch(`/api/delete/${type}/${postId}`, {
+      const resp = await fetch(`/api/delete/${type}/${postId}`, {
         method: "DELETE",
       });
-      const data = await response.json();
+      const data = await resp.json();
 
       if (data.status === "ok") {
-        const posts = JSON.parse(localStorage.getItem(category)) || [];
-        const updated = posts.filter((p) => p._id !== postId);
-        localStorage.setItem(category, JSON.stringify(updated));
+        // remove locally
+        if (category === "marketplace" || category === "lostPets" || category === "alerts") {
+          const stored = (await localforage.getItem(category)) || [];
+          const arr = Array.isArray(stored)
+            ? stored
+            : typeof stored === "string"
+            ? JSON.parse(stored)
+            : Object.values(stored);
+          const updated = arr.filter((p) => p._id !== postId);
+          await localforage.setItem(category, updated);
+        } else {
+          // events or others stay in localStorage
+          const arr = JSON.parse(localStorage.getItem(category)) || [];
+          const updated = arr.filter((p) => p._id !== postId);
+          localStorage.setItem(category, JSON.stringify(updated));
+        }
 
         setUserPosts((prev) => prev.filter((p) => p._id !== postId));
       } else {
@@ -70,17 +108,12 @@ const Profile = () => {
     <div className="profile-container">
       <div className="profile-header">
         <div className="profile-avatar-container">
-          <img
-            src="/img/profile.png"
-            alt="Profile"
-            className="profile-avatar"
-          />
+          <img src="/img/profile.png" alt="Profile" className="profile-avatar" />
           <div className="profile-edit-badge">✏️</div>
         </div>
         <div className="profile-header-info">
           <h1 className="profile-name">
-            {userData.firstName || "First Name"}{" "}
-            {userData.lastName || "Last Name"}
+            {userData.firstName || "First Name"} {userData.lastName || "Last Name"}
           </h1>
           <p className="profile-email">{userData.email}</p>
           <div className="profile-location">
@@ -115,9 +148,7 @@ const Profile = () => {
             </div>
             <div className="info-item">
               <span className="info-label">Country</span>
-              <span className="info-value">
-                {userData.country || "United States"}
-              </span>
+              <span className="info-value">{userData.country || "United States"}</span>
             </div>
           </div>
         </div>
@@ -131,7 +162,10 @@ const Profile = () => {
           {userPosts.length === 0 ? (
             <div className="empty-state">
               <p>You haven't created any posts yet</p>
-              <button className="create-post-btn">
+              <button
+                className="create-post-btn"
+                onClick={() => navigate("/add", { state: { from: "profile" } })}
+              >
                 Create Your First Post
               </button>
             </div>
@@ -139,13 +173,13 @@ const Profile = () => {
             <div className="posts-grid">
               {userPosts.map((post) => (
                 <div key={post._id} className="post-card">
-                  {post.image && post.image.data ? (
+                  {post.image?.data ? (
                     <div
                       className="post-image"
                       style={{
                         backgroundImage: `url(data:${post.image.contentType};base64,${post.image.data})`,
                       }}
-                    ></div>
+                    />
                   ) : (
                     <div className="post-image placeholder">
                       <span>No Image</span>
@@ -153,13 +187,9 @@ const Profile = () => {
                   )}
                   <div className="post-content">
                     <div className="post-meta">
-                      <span className="post-category">
-                        {post.category || "General"}
-                      </span>
+                      <span className="post-category">{post.category || "General"}</span>
                       <span className="post-date">
-                        {new Date(
-                          post.createdAt || Date.now()
-                        ).toLocaleDateString()}
+                        {new Date(post.createdAt || Date.now()).toLocaleDateString()}
                       </span>
                     </div>
                     <h3 className="post-title">{post.title}</h3>

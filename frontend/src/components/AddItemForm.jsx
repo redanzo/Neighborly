@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import localforage from "localforage";
 import "./AddItemForm.css";
 
 const formConfig = {
@@ -46,7 +47,7 @@ const AddItemForm = () => {
       const file = files[0];
       if (file) {
         const isValidType = ["image/jpeg", "image/png"].includes(file.type);
-        const isValidSize = file.size <= 1 * 1024 * 1024;
+        const isValidSize = file.size <= 10 * 1024 * 1024;
         if (!isValidType) {
           alert("Only JPG and PNG files are allowed.");
           return;
@@ -118,10 +119,10 @@ const AddItemForm = () => {
 
         const postResult = await postResponse.json();
         if (postResult.status === "ok") {
-          localStorage.setItem("alerts", JSON.stringify(postResult.alerts));
+          localforage.setItem("alerts", JSON.stringify(postResult.alerts));
           localStorage.setItem("events", JSON.stringify(postResult.events));
-          localStorage.setItem("lostPets", JSON.stringify(postResult.lostPets));
-          localStorage.setItem("marketplace", JSON.stringify(postResult.marketplace));
+          localforage.setItem("lostPets", JSON.stringify(postResult.lostPets));
+          localforage.setItem("marketplace", JSON.stringify(postResult.marketplace));
         }
         else{
           console.error("Failed to fetch posts after submission");

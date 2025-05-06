@@ -1,65 +1,91 @@
 import React, { useState, useEffect } from "react";
 import "./LostPets.css";
 import { useParams, useNavigate } from "react-router-dom";
+import localforage from "localforage";
 
-const getStoredLostPets = () => {
-  const stored = localStorage.getItem("lostPets");
+// Async loader for lostPets
+const getStoredLostPets = async () => {
   try {
-    const parsed = stored ? JSON.parse(stored) : [];
-    return parsed.reverse().map((item, index) => {
-      let imageUrl = item.image;
-      if (item.image?.data && item.image?.contentType) {
-        imageUrl = `data:${item.image.contentType};base64,${item.image.data}`;
-      }
-      return {
-        id: item._id || index + 1,
-        title: item.title || "Unnamed Pet",
-        image: imageUrl,
-        description: item.description || "",
-        contact: item.email || "N/A",
-      };
-    });
+    const stored = await localforage.getItem("lostPets");
+    if (!stored) return [];
+
+    let items;
+    if (Array.isArray(stored)) {
+      items = stored;
+    } else if (typeof stored === "string") {
+      items = JSON.parse(stored);
+    } else if (typeof stored === "object") {
+      items = Object.values(stored);
+    } else {
+      console.warn("Unexpected type for lostPets:", typeof stored);
+      return [];
+    }
+
+    return items
+      .slice()
+      .reverse()
+      .map((item, index) => {
+        let imageUrl = item.image;
+        if (item.image?.data && item.image?.contentType) {
+          imageUrl = `data:${item.image.contentType};base64,${item.image.data}`;
+        }
+        return {
+          id: item._id ?? index + 1,
+          title: item.title || "Unnamed Pet",
+          image: imageUrl,
+          description: item.description || "",
+          contact: item.email || "N/A",
+        };
+      });
   } catch (e) {
-    console.error("Error parsing or normalizing lost pets data", e);
+    console.error("Error loading lostPets from localForage", e);
     return [];
   }
 };
 
 const LostPets = () => {
+  const [lostPetsData, setLostPetsData] = useState([]);
+  const [filteredPets, setFilteredPets] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedPet, setSelectedPet] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [lostPetsData, setLostPetsData] = useState(getStoredLostPets());
-  const [filteredPets, setFilteredPets] = useState(lostPetsData);
 
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { id } = useParams();
 
+  // Load lostPets on mount
   useEffect(() => {
-    const updated = getStoredLostPets();
-    setLostPetsData(updated);
+    const loadPets = async () => {
+      const data = await getStoredLostPets();
+      setLostPetsData(data);
+    };
+    loadPets();
   }, []);
 
+  // Filter whenever the list or searchTerm changes
   useEffect(() => {
-    if (id) {
-      const matchedPet = lostPetsData.find((pet) => pet.id.toString() === id);
-      if (matchedPet) {
-        setSelectedPet(matchedPet);
+    setFilteredPets(
+      lostPetsData.filter((pet) =>
+        pet.title.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [lostPetsData, searchTerm]);
+
+  // If URL has an id, open that pet
+  useEffect(() => {
+    if (id && lostPetsData.length) {
+      const match = lostPetsData.find((p) => p.id.toString() === id);
+      if (match) {
+        setSelectedPet(match);
         setShowModal(true);
       }
     }
-  }, [id]);
-
-  useEffect(() => {
-    const filtered = lostPetsData.filter((pet) =>
-      pet.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredPets(filtered);
-  }, [searchTerm, lostPetsData]);
+  }, [id, lostPetsData]);
 
   const handlePetClick = (pet) => {
     setSelectedPet(pet);
     setShowModal(true);
+    navigate(`/lostpets/${pet.id}`);
   };
 
   const closeModal = () => {
@@ -68,13 +94,10 @@ const LostPets = () => {
     navigate("/lostpets");
   };
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
   return (
     <div className="lostpets-container">
       <div className="lostpets-content">
+        {/* Grid of pets */}
         <div className="lostpets-grid">
           {filteredPets.map((pet) => (
             <div
@@ -94,12 +117,20 @@ const LostPets = () => {
               )}
               <div className="lostpets-post-content">
                 <h3 className="lostpets-post-title">{pet.title}</h3>
-                <p className="lostpets-post-description">{pet.description}</p>
+                <p className="lostpets-post-description">
+                  {pet.description}
+                </p>
               </div>
             </div>
           ))}
+          {filteredPets.length === 0 && (
+            <div className="lostpets-no-results">
+              No pets match your search
+            </div>
+          )}
         </div>
 
+        {/* Sidebar */}
         <div className="lostpets-sidebar">
           <div className="lostpets-search-container">
             <img
@@ -112,31 +143,37 @@ const LostPets = () => {
               placeholder="Search"
               className="lostpets-search-input"
               value={searchTerm}
-              onChange={handleSearchChange}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <hr className="lostpets-divider" />
           <button
             className="lostpets-sidebar-btn"
-            onClick={() => navigate("/add", { state: { from: "lostpets" } })}
+            onClick={() =>
+              navigate("/add", { state: { from: "lostpets" } })
+            }
           >
             Report Lost Pet
           </button>
         </div>
 
+        {/* Modal */}
         {showModal && selectedPet && (
           <div className="lostpets-modal-overlay" onClick={closeModal}>
             <div
               className="lostpets-modal"
               onClick={(e) => e.stopPropagation()}
             >
-              <button className="lostpets-modal-close" onClick={closeModal}>
+              <button
+                className="lostpets-modal-close"
+                onClick={closeModal}
+              >
                 ×
               </button>
               <div
                 className="lostpets-modal-image"
                 style={{ backgroundImage: `url(${selectedPet.image})` }}
-              ></div>
+              />
               <div className="lostpets-modal-content">
                 <h2>{selectedPet.title}</h2>
                 <p className="lostpets-modal-description">
