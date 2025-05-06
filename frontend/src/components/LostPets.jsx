@@ -3,7 +3,6 @@ import "./LostPets.css";
 import { useParams, useNavigate } from "react-router-dom";
 import localforage from "localforage";
 
-// Async loader for lostPets
 const getStoredLostPets = async () => {
   try {
     const stored = await localforage.getItem("lostPets");
@@ -53,7 +52,6 @@ const LostPets = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // Load lostPets on mount
   useEffect(() => {
     const loadPets = async () => {
       const data = await getStoredLostPets();
@@ -62,7 +60,6 @@ const LostPets = () => {
     loadPets();
   }, []);
 
-  // Filter whenever the list or searchTerm changes
   useEffect(() => {
     setFilteredPets(
       lostPetsData.filter((pet) =>
@@ -71,7 +68,6 @@ const LostPets = () => {
     );
   }, [lostPetsData, searchTerm]);
 
-  // If URL has an id, open that pet
   useEffect(() => {
     if (id && lostPetsData.length) {
       const match = lostPetsData.find((p) => p.id.toString() === id);
@@ -97,7 +93,6 @@ const LostPets = () => {
   return (
     <div className="lostpets-container">
       <div className="lostpets-content">
-        {/* Grid of pets */}
         <div className="lostpets-grid">
           {filteredPets.map((pet) => (
             <div

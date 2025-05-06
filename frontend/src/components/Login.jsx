@@ -69,6 +69,11 @@ const Login = () => {
 
   return (
     <div className="auth-container fade-in">
+      <button
+        type="button"
+        className="back-button"
+        onClick={() => navigate('/')}
+      >← Back</button>
       <h2>Login</h2>
       <form onSubmit={handleLogin} className="auth-form">
         <input

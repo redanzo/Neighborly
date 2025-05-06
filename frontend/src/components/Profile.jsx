@@ -8,7 +8,6 @@ const Profile = () => {
   const [userPosts, setUserPosts] = useState([]);
   const navigate = useNavigate();
 
-  // load user from localStorage
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser?.email) {
@@ -16,8 +15,6 @@ const Profile = () => {
     }
   }, []);
 
-  // load this user's posts from marketplace, lostPets, alerts via localForage,
-  // and from events via localStorage
   useEffect(() => {
     if (!userData.email) return;
 
@@ -40,7 +37,6 @@ const Profile = () => {
             continue;
           }
         } else {
-          // events still in localStorage
           items = JSON.parse(localStorage.getItem(cat)) || [];
         }
 
@@ -77,7 +73,6 @@ const Profile = () => {
       const data = await resp.json();
 
       if (data.status === "ok") {
-        // remove locally
         if (category === "marketplace" || category === "lostPets" || category === "alerts") {
           const stored = (await localforage.getItem(category)) || [];
           const arr = Array.isArray(stored)
@@ -88,7 +83,6 @@ const Profile = () => {
           const updated = arr.filter((p) => p._id !== postId);
           await localforage.setItem(category, updated);
         } else {
-          // events or others stay in localStorage
           const arr = JSON.parse(localStorage.getItem(category)) || [];
           const updated = arr.filter((p) => p._id !== postId);
           localStorage.setItem(category, JSON.stringify(updated));

@@ -17,22 +17,18 @@ const getStoredData = async (key) => {
 
     let items;
     if (Array.isArray(stored)) {
-      // happy path: you really stored an Array
       items = stored;
     } else if (typeof stored === "string") {
-      // maybe you JSON.stringified it
       items = JSON.parse(stored);
     } else if (typeof stored === "object") {
-      // you might have stored a map of id→item
       items = Object.values(stored);
     } else {
-      // some other odd shape
       console.warn(`Unexpected type for ${key}:`, typeof stored);
       return [];
     }
 
     return items
-      .slice()          // don’t mutate the original
+      .slice()
       .reverse()
       .map((item, i) => {
         let imageUrl = item.image;
@@ -89,7 +85,6 @@ const getUpcomingEvent = (eventsGrouped) => {
 const Home = () => {
   const navigate = useNavigate();
 
-  // --- state for everything we now load asynchronously ---
   const [alerts, setAlerts] = useState([]);
   const [lostPets, setLostPets] = useState([]);
   const [marketplace, setMarketplace] = useState([]);
@@ -109,7 +104,6 @@ const Home = () => {
     loadAll();
   }, []);
 
-  // events remain in localStorage
   const events = getStoredEvents();
   const upcomingEvent = getUpcomingEvent(events);
   const latestEventDate = upcomingEvent?.date ?? null;

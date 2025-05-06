@@ -98,6 +98,11 @@ const Signup = () =>{
 
   return (
     <div className="auth-container fade-in">
+      <button
+        type="button"
+        className="back-button"
+        onClick={() => navigate('/')}
+      >← Back</button>
       <h2>Sign Up</h2>
       <form onSubmit={step === 1 ? handleContinue : handleSignup} className="auth-form signup-form">
         {step === 1 && (

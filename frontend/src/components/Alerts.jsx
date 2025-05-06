@@ -3,7 +3,6 @@ import "./Alerts.css";
 import { useParams, useNavigate } from "react-router-dom";
 import localforage from "localforage";
 
-// Async loader for alerts
 const getStoredAlerts = async () => {
   try {
     const stored = await localforage.getItem("alerts");
@@ -52,7 +51,6 @@ const Alerts = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Load alerts on mount
   useEffect(() => {
     const loadAlerts = async () => {
       const data = await getStoredAlerts();
@@ -61,7 +59,6 @@ const Alerts = () => {
     loadAlerts();
   }, []);
 
-  // Filter whenever alertsData or searchTerm changes
   useEffect(() => {
     setFilteredAlerts(
       alertsData.filter((alert) =>
@@ -70,7 +67,6 @@ const Alerts = () => {
     );
   }, [alertsData, searchTerm]);
 
-  // Open modal if URL has :id
   useEffect(() => {
     if (id && alertsData.length) {
       const match = alertsData.find((a) => a.id.toString() === id);
@@ -96,7 +92,7 @@ const Alerts = () => {
   return (
     <div className="alerts-container">
       <div className="alerts-content">
-        {/* Alerts Grid */}
+        {/* Left Scrollable Section */}
         <div className="alerts-grid">
           {filteredAlerts.map((alert) => (
             <div

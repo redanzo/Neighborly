@@ -3,7 +3,6 @@ import "./Marketplace.css";
 import { useParams, useNavigate } from "react-router-dom";
 import localforage from "localforage";
 
-// Async helper for marketplace data
 const getStoredMarketplace = async () => {
   try {
     const stored = await localforage.getItem("marketplace");
@@ -56,7 +55,6 @@ const Marketplace = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // Load data once on mount
   useEffect(() => {
     const loadData = async () => {
       const data = await getStoredMarketplace();
@@ -65,7 +63,6 @@ const Marketplace = () => {
     loadData();
   }, []);
 
-  // When marketplaceData or filters change, recompute filteredItems
   useEffect(() => {
     const filtered = marketplaceData.filter((item) => {
       const matchesSearch = item.title
@@ -77,7 +74,6 @@ const Marketplace = () => {
     setFilteredItems(filtered);
   }, [marketplaceData, searchTerm, showFreeOnly]);
 
-  // If URL has an `:id`, open that item in the modal
   useEffect(() => {
     if (id && marketplaceData.length) {
       const match = marketplaceData.find((it) => it.id.toString() === id);
