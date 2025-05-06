@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Auth.css';
+import localforage from 'localforage';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -51,10 +52,10 @@ const Login = () => {
       const postData = await postResponse.json();
   
       if (postData.status === 'ok') {
-        localStorage.setItem('alerts', JSON.stringify(postData.alerts));
+        localforage.setItem('alerts', JSON.stringify(postData.alerts));
         localStorage.setItem('events', JSON.stringify(postData.events));
-        localStorage.setItem('lostPets', JSON.stringify(postData.lostPets));
-        localStorage.setItem('marketplace', JSON.stringify(postData.marketplace));
+        localforage.setItem('lostPets', JSON.stringify(postData.lostPets));
+        localforage.setItem('marketplace', JSON.stringify(postData.marketplace));
   
         navigate('/home');
       } else {

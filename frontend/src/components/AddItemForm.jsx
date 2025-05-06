@@ -46,7 +46,7 @@ const AddItemForm = () => {
       const file = files[0];
       if (file) {
         const isValidType = ["image/jpeg", "image/png"].includes(file.type);
-        const isValidSize = file.size <= 10 * 1024 * 1024;
+        const isValidSize = file.size <= 1 * 1024 * 1024;
         if (!isValidType) {
           alert("Only JPG and PNG files are allowed.");
           return;
